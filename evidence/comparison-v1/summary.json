@@ -1,0 +1,785 @@
+{
+  "schema": "ladir-comparison-1",
+  "method": "Analysis of previously recorded runs; no new performance run. Negative percentChange is a decrease. FPS equivalents are 1000/median frame ms, not average or guaranteed minimum FPS.",
+  "sourceCommits": {
+    "Unity": "6a84c9e11d98eaa1de4dab1ef903839bb7ef5f9b",
+    "ladir": "34841d6abc1c1c12251c2ace18ffb853895db16f"
+  },
+  "sources": [
+    {
+      "repository": "Unity",
+      "path": "evidence/unity-v1/visible/benchmark.json",
+      "sha256": "25bb41626bdd13e3d20c4e8c51380177092a1728c2efb0a65dff38c97448daf4"
+    },
+    {
+      "repository": "Unity",
+      "path": "evidence/unity-v1/final/benchmark.json",
+      "sha256": "e8a3856633209b6a53d334bcd02408a49934489ec3c090fd083b9a2c19cb5d91"
+    },
+    {
+      "repository": "ladir",
+      "path": "evidence/v41/user-before/loading.json",
+      "sha256": "6da016760db17a31e222b8fcf03585ab3d76cab3a9da4067f60c5506bc504cf4"
+    },
+    {
+      "repository": "ladir",
+      "path": "evidence/v41/user-final/loading.json",
+      "sha256": "772446701f91dc35688cecc33c5cecf5df277d950ae113d370fc760592d58a89"
+    },
+    {
+      "repository": "ladir",
+      "path": "evidence/v41/flight-before/benchmark.json",
+      "sha256": "ab185fac5620432a778e187c16d9e887ea18cab87a43d759be7354c107fb78f8"
+    },
+    {
+      "repository": "ladir",
+      "path": "evidence/v41/flight-final/benchmark.json",
+      "sha256": "d5034ae697df642373ef52bce61c67843ed4a0b61382dcc6c2917bc3584071d6"
+    },
+    {
+      "repository": "ladir",
+      "path": "evidence/v42/baseline/descent.json",
+      "sha256": "e1e3cdc85cac04984dc3e7592ad1c2101724dfb856a2ef3ce2cb1c7930931b10"
+    },
+    {
+      "repository": "ladir",
+      "path": "evidence/v42/release/descent.json",
+      "sha256": "68f5ae842385896fd9c50bd6c39de45b6af2f39bef9b6edf942da407ae9b4cf0"
+    }
+  ],
+  "unity": {
+    "worldHash": "b7aefd351cef8c3f6e23e5878c5369987fa41d29e28a4fe9297c891ad09efada",
+    "hardware": {
+      "cpu": "Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz",
+      "gpu": "NVIDIA GeForce GTX 1660 Ti",
+      "api": "Direct3D11",
+      "width": 1440,
+      "height": 1000
+    },
+    "metrics": {
+      "firstSurfaceMs": {
+        "before": 3578.906982421875,
+        "after": 1224.3836669921875,
+        "delta": -2354.5233154296875,
+        "percentChange": -65.78889384368304
+      },
+      "fullInitialDetailMs": {
+        "before": 4885.076171875,
+        "after": 2317.17138671875,
+        "delta": -2567.90478515625,
+        "percentChange": -52.56632025393028
+      },
+      "uploadCpuTotalMs": {
+        "before": 478.03564453125,
+        "after": 452.53277587890625,
+        "delta": -25.50286865234375,
+        "percentChange": -5.334930343395467
+      },
+      "uploadCpuMaxMs": {
+        "before": 20.5492000579834,
+        "after": 10.092499732971191,
+        "delta": -10.456700325012207,
+        "percentChange": -50.88616732284798
+      },
+      "readTaskLatencyTotalMs": {
+        "before": 8238.8232421875,
+        "after": 7831.02490234375,
+        "delta": -407.79833984375,
+        "percentChange": -4.949715849656643
+      },
+      "meshJobLatencyTotalMs": {
+        "before": 21493.52734375,
+        "after": 16919.615234375,
+        "delta": -4573.912109375,
+        "percentChange": -21.28041636081211
+      },
+      "regionCachePeakBytes": {
+        "before": 100646352,
+        "after": 100646352,
+        "delta": 0,
+        "percentChange": 0
+      },
+      "meshBufferPeakBytes": {
+        "before": 122905792,
+        "after": 122905792,
+        "delta": 0,
+        "percentChange": 0
+      },
+      "unityAllocatedBytes": {
+        "before": 216432275,
+        "after": 216423268,
+        "delta": -9007,
+        "percentChange": -0.004161578951198475
+      },
+      "managedHeapBytes": {
+        "before": 11034624,
+        "after": 9641984,
+        "delta": -1392640,
+        "percentChange": -12.620638455827766
+      },
+      "readTiles": {
+        "before": 217,
+        "after": 217,
+        "delta": 0,
+        "percentChange": 0
+      },
+      "terrainPlans": {
+        "before": 70,
+        "after": 71,
+        "delta": 1,
+        "percentChange": 1.4285714285714286
+      }
+    },
+    "processToFirstSurfaceMs": 2730.37109375,
+    "processToFullDetailMs": 3823.158935546875,
+    "processWorkingSetBytes": null,
+    "startup": {
+      "before": {
+        "frames": 267,
+        "medianMs": 5.382306098937988,
+        "medianFpsEquivalent": 185.79396667857952,
+        "p95Ms": 13.839300155639648,
+        "p99Ms": 50.04199981689453,
+        "maxMs": 3056.366455078125,
+        "cpuFrameMedianMs": 5.287300109863281,
+        "gpuMedianMs": 2.9465599060058594,
+        "over16_667ms": 11,
+        "over33_333ms": 6,
+        "over50ms": 3
+      },
+      "after": {
+        "frames": 278,
+        "medianMs": 4.032497406005859,
+        "medianFpsEquivalent": 247.98528041472147,
+        "p95Ms": 11.703096389770508,
+        "p99Ms": 50.135501861572266,
+        "maxMs": 786.6903076171875,
+        "cpuFrameMedianMs": 4.030399799346924,
+        "gpuMedianMs": 2.766848087310791,
+        "over16_667ms": 8,
+        "over33_333ms": 6,
+        "over50ms": 4
+      }
+    },
+    "flight": {
+      "before": {
+        "frames": 3858,
+        "over16_667ms": 456,
+        "over16_667Percent": 11.81959564541213,
+        "over33_333ms": 3,
+        "over50ms": 0,
+        "maxMs": 46.95880126953125
+      },
+      "after": {
+        "frames": 4851,
+        "over16_667ms": 65,
+        "over16_667Percent": 1.3399299113584828,
+        "over33_333ms": 1,
+        "over50ms": 0,
+        "maxMs": 35.7510986328125
+      }
+    },
+    "phases": [
+      {
+        "name": "lake-steady",
+        "before": {
+          "frames": 541,
+          "medianMs": 14.866297721862793,
+          "medianFpsEquivalent": 67.26624333167848,
+          "p95Ms": 19.663103103637695,
+          "p99Ms": 26.07119369506836,
+          "maxMs": 34.356300354003906,
+          "cpuFrameMedianMs": 14.835700035095215,
+          "gpuMedianMs": 12.25267219543457,
+          "over16_667ms": 115,
+          "over33_333ms": 1,
+          "over50ms": 0
+        },
+        "after": {
+          "frames": 710,
+          "medianMs": 10.76489543914795,
+          "medianFpsEquivalent": 92.89453907405075,
+          "p95Ms": 16.306703567504883,
+          "p99Ms": 17.564603805541992,
+          "maxMs": 29.53239631652832,
+          "cpuFrameMedianMs": 10.758299827575684,
+          "gpuMedianMs": 9.25004768371582,
+          "over16_667ms": 25,
+          "over33_333ms": 0,
+          "over50ms": 0
+        },
+        "medianChange": {
+          "before": 14.866297721862793,
+          "after": 10.76489543914795,
+          "delta": -4.101402282714844,
+          "percentChange": -27.588592395019823
+        },
+        "p95Change": {
+          "before": 19.663103103637695,
+          "after": 16.306703567504883,
+          "delta": -3.3563995361328125,
+          "percentChange": -17.069531286299746
+        },
+        "p99Change": {
+          "before": 26.07119369506836,
+          "after": 17.564603805541992,
+          "delta": -8.506589889526367,
+          "percentChange": -32.62830996163969
+        },
+        "p95ReductionNeededFor10msPercent": 38.67552716216992
+      },
+      {
+        "name": "river-flight",
+        "before": {
+          "frames": 764,
+          "medianMs": 13.301403045654297,
+          "medianFpsEquivalent": 75.18003902052348,
+          "p95Ms": 18.140199661254883,
+          "p99Ms": 23.01670265197754,
+          "maxMs": 46.95880126953125,
+          "cpuFrameMedianMs": 13.329400062561035,
+          "gpuMedianMs": 10.252287864685059,
+          "over16_667ms": 93,
+          "over33_333ms": 1,
+          "over50ms": 0
+        },
+        "after": {
+          "frames": 986,
+          "medianMs": 9.527700424194336,
+          "medianFpsEquivalent": 104.95712034150782,
+          "p95Ms": 14.980003356933594,
+          "p99Ms": 16.914400100708008,
+          "maxMs": 35.7510986328125,
+          "cpuFrameMedianMs": 9.519100189208984,
+          "gpuMedianMs": 8.40345573425293,
+          "over16_667ms": 11,
+          "over33_333ms": 1,
+          "over50ms": 0
+        },
+        "medianChange": {
+          "before": 13.301403045654297,
+          "after": 9.527700424194336,
+          "delta": -3.773702621459961,
+          "percentChange": -28.370711033321165
+        },
+        "p95Change": {
+          "before": 18.140199661254883,
+          "after": 14.980003356933594,
+          "delta": -3.160196304321289,
+          "percentChange": -17.42095656792058
+        },
+        "p99Change": {
+          "before": 23.01670265197754,
+          "after": 16.914400100708008,
+          "delta": -6.102302551269531,
+          "percentChange": -26.51249678782828
+        },
+        "p95ReductionNeededFor10msPercent": 33.24434072725736
+      },
+      {
+        "name": "canyon-turn",
+        "before": {
+          "frames": 868,
+          "medianMs": 11.95880126953125,
+          "medianFpsEquivalent": 83.62042126645333,
+          "p95Ms": 17.5143985748291,
+          "p99Ms": 19.53679847717285,
+          "maxMs": 34.06700134277344,
+          "cpuFrameMedianMs": 11.963899612426758,
+          "gpuMedianMs": 9.134079933166504,
+          "over16_667ms": 67,
+          "over33_333ms": 1,
+          "over50ms": 0
+        },
+        "after": {
+          "frames": 1047,
+          "medianMs": 9.268998146057129,
+          "medianFpsEquivalent": 107.8865249773928,
+          "p95Ms": 14.692098617553711,
+          "p99Ms": 16.319499969482422,
+          "maxMs": 18.4639949798584,
+          "cpuFrameMedianMs": 9.267399787902832,
+          "gpuMedianMs": 8.194560050964355,
+          "over16_667ms": 7,
+          "over33_333ms": 0,
+          "over50ms": 0
+        },
+        "medianChange": {
+          "before": 11.95880126953125,
+          "after": 9.268998146057129,
+          "delta": -2.689803123474121,
+          "percentChange": -22.492247030872797
+        },
+        "p95Change": {
+          "before": 17.5143985748291,
+          "after": 14.692098617553711,
+          "delta": -2.8222999572753906,
+          "percentChange": -16.114169979730118
+        },
+        "p99Change": {
+          "before": 19.53679847717285,
+          "after": 16.319499969482422,
+          "delta": -3.2172985076904297,
+          "percentChange": -16.46789012769712
+        },
+        "p95ReductionNeededFor10msPercent": 31.93620421215878
+      },
+      {
+        "name": "mountain-flight",
+        "before": {
+          "frames": 949,
+          "medianMs": 10.830698013305664,
+          "medianFpsEquivalent": 92.3301525692514,
+          "p95Ms": 17.038803100585938,
+          "p99Ms": 19.277097702026367,
+          "maxMs": 26.95279884338379,
+          "cpuFrameMedianMs": 10.86340045928955,
+          "gpuMedianMs": 8.583168029785156,
+          "over16_667ms": 57,
+          "over33_333ms": 0,
+          "over50ms": 0
+        },
+        "after": {
+          "frames": 1184,
+          "medianMs": 8.155802726745605,
+          "medianFpsEquivalent": 122.61208779862532,
+          "p95Ms": 13.993402481079102,
+          "p99Ms": 15.557901382446289,
+          "maxMs": 16.860698699951172,
+          "cpuFrameMedianMs": 8.159500122070312,
+          "gpuMedianMs": 7.429632186889648,
+          "over16_667ms": 2,
+          "over33_333ms": 0,
+          "over50ms": 0
+        },
+        "medianChange": {
+          "before": 10.830698013305664,
+          "after": 8.155802726745605,
+          "delta": -2.6748952865600586,
+          "percentChange": -24.697348991486166
+        },
+        "p95Change": {
+          "before": 17.038803100585938,
+          "after": 13.993402481079102,
+          "delta": -3.045400619506836,
+          "percentChange": -17.873324795930703
+        },
+        "p99Change": {
+          "before": 19.277097702026367,
+          "after": 15.557901382446289,
+          "delta": -3.719196319580078,
+          "percentChange": -19.293341648567377
+        },
+        "p95ReductionNeededFor10msPercent": 28.53775189042622
+      },
+      {
+        "name": "boost-release",
+        "before": {
+          "frames": 736,
+          "medianMs": 13.947193145751953,
+          "medianFpsEquivalent": 71.69901424248798,
+          "p95Ms": 18.70499610900879,
+          "p99Ms": 23.137897491455078,
+          "maxMs": 30.08160400390625,
+          "cpuFrameMedianMs": 13.927200317382812,
+          "gpuMedianMs": 10.795007705688477,
+          "over16_667ms": 124,
+          "over33_333ms": 0,
+          "over50ms": 0
+        },
+        "after": {
+          "frames": 924,
+          "medianMs": 10.631597518920898,
+          "medianFpsEquivalent": 94.05924163516487,
+          "p95Ms": 15.588095664978027,
+          "p99Ms": 17.531696319580078,
+          "maxMs": 31.436302185058594,
+          "cpuFrameMedianMs": 10.625,
+          "gpuMedianMs": 8.984576225280762,
+          "over16_667ms": 20,
+          "over33_333ms": 0,
+          "over50ms": 0
+        },
+        "medianChange": {
+          "before": 13.947193145751953,
+          "after": 10.631597518920898,
+          "delta": -3.3155956268310547,
+          "percentChange": -23.772493807049063
+        },
+        "p95Change": {
+          "before": 18.70499610900879,
+          "after": 15.588095664978027,
+          "delta": -3.1169004440307617,
+          "percentChange": -16.663464808365212
+        },
+        "p99Change": {
+          "before": 23.137897491455078,
+          "after": 17.531696319580078,
+          "delta": -5.606201171875,
+          "percentChange": -24.22951858069815
+        },
+        "p95ReductionNeededFor10msPercent": 35.848481976748914
+      }
+    ]
+  },
+  "browser": {
+    "loadingV41": {
+      "before": [
+        {
+          "cache": "cold",
+          "worldHash": "b7aefd351cef8c3f6e23e5878c5369987fa41d29e28a4fe9297c891ad09efada",
+          "editorReadyMs": 10148,
+          "cockpitReadyMs": 5048,
+          "detailReadyMs": 16182,
+          "camera": [
+            -407.8242660281261,
+            861.1791449163383,
+            -303.95020254061905
+          ],
+          "fov": 63.999999999999964
+        },
+        {
+          "cache": "warm",
+          "worldHash": "b7aefd351cef8c3f6e23e5878c5369987fa41d29e28a4fe9297c891ad09efada",
+          "editorReadyMs": 8507,
+          "cockpitReadyMs": 4588,
+          "detailReadyMs": 14497,
+          "camera": [
+            -407.822594735838,
+            861.1813475553737,
+            -303.94620423094534
+          ],
+          "fov": 63.999999999999964
+        }
+      ],
+      "after": [
+        {
+          "cache": "cold",
+          "worldHash": "b7aefd351cef8c3f6e23e5878c5369987fa41d29e28a4fe9297c891ad09efada",
+          "editorReadyMs": 9622,
+          "cockpitReadyMs": 4662,
+          "detailReadyMs": 12295,
+          "camera": [
+            -407.822594735838,
+            861.1813475553737,
+            -303.94620423094534
+          ],
+          "fov": 63.99999999992246
+        },
+        {
+          "cache": "warm",
+          "worldHash": "b7aefd351cef8c3f6e23e5878c5369987fa41d29e28a4fe9297c891ad09efada",
+          "editorReadyMs": 8990,
+          "cockpitReadyMs": 2210,
+          "detailReadyMs": 10806,
+          "camera": [
+            -407.8242660281261,
+            861.1791449163383,
+            -303.95020254061905
+          ],
+          "fov": 63.99999999999819
+        }
+      ]
+    },
+    "flightV41": {
+      "before": [
+        {
+          "cache": "cold",
+          "durationMs": 60000.20999999344,
+          "renderFps": 58.41646220905532,
+          "cpu": {
+            "n": 3505,
+            "p50": 6.575000002980232,
+            "p95": 12.240000009536743,
+            "p99": 15.445000007748604,
+            "max": 98.34999999403954
+          },
+          "gpuRender": {
+            "n": 3505,
+            "p50": 3.7657599999999998,
+            "p95": 7.137792000000001,
+            "p99": 8.285631999999998,
+            "max": 10.431999999999999
+          },
+          "frame": {
+            "n": 3504,
+            "p50": 16.669999999998254,
+            "p95": 16.904999999998836,
+            "p99": 33.345000000001164,
+            "max": 233.24500000000262
+          },
+          "over50": 8,
+          "over100": 1,
+          "scenarios": [
+            "forest-low",
+            "lake",
+            "river",
+            "canyon-turn",
+            "boost",
+            "boost-release",
+            "combat",
+            "short-warp",
+            "long-warp",
+            "cube-face",
+            "pole"
+          ]
+        },
+        {
+          "cache": "warm",
+          "durationMs": 59999.31999999285,
+          "renderFps": 58.78399955200193,
+          "cpu": {
+            "n": 3527,
+            "p50": 4.7349999994039536,
+            "p95": 7.96000000834465,
+            "p99": 10.239999994635582,
+            "max": 54.59499999880791
+          },
+          "gpuRender": {
+            "n": 3527,
+            "p50": 2.7473919999999996,
+            "p95": 6.795136,
+            "p99": 7.991039999999999,
+            "max": 10.468607999999998
+          },
+          "frame": {
+            "n": 3526,
+            "p50": 16.669999999998254,
+            "p95": 16.870000000009895,
+            "p99": 17.089999999996508,
+            "max": 116.66500000000815
+          },
+          "over50": 14,
+          "over100": 1,
+          "scenarios": [
+            "forest-low",
+            "lake",
+            "river",
+            "canyon-turn",
+            "boost",
+            "boost-release",
+            "combat",
+            "short-warp",
+            "long-warp",
+            "cube-face",
+            "pole"
+          ]
+        }
+      ],
+      "after": [
+        {
+          "cache": "cold",
+          "durationMs": 60004.265000000596,
+          "renderFps": 58.629165776798786,
+          "cpu": {
+            "n": 3518,
+            "p50": 4.424999997019768,
+            "p95": 9.334999993443489,
+            "p99": 12.069999992847443,
+            "max": 146.29999999701977
+          },
+          "gpuRender": {
+            "n": 3518,
+            "p50": 3.7619520000000004,
+            "p95": 5.925632000000001,
+            "p99": 8.333440000000003,
+            "max": 10.434208
+          },
+          "frame": {
+            "n": 3517,
+            "p50": 16.669999999998254,
+            "p95": 16.860000000000582,
+            "p99": 17.12999999999738,
+            "max": 266.5099999999984
+          },
+          "over50": 10,
+          "over100": 3,
+          "scenarios": [
+            "forest-low",
+            "lake",
+            "river",
+            "canyon-turn",
+            "boost",
+            "boost-release",
+            "combat",
+            "short-warp",
+            "long-warp",
+            "cube-face",
+            "pole"
+          ]
+        },
+        {
+          "cache": "warm",
+          "durationMs": 60000.04500000179,
+          "renderFps": 58.766622591697974,
+          "cpu": {
+            "n": 3526,
+            "p50": 5.050000011920929,
+            "p95": 8.284999996423721,
+            "p99": 10.88000001013279,
+            "max": 67.28499999642372
+          },
+          "gpuRender": {
+            "n": 3526,
+            "p50": 3.826336,
+            "p95": 7.926880000000001,
+            "p99": 8.666879999999997,
+            "max": 11.216991999999998
+          },
+          "frame": {
+            "n": 3525,
+            "p50": 16.669999999998254,
+            "p95": 16.86500000000524,
+            "p99": 17.080000000001746,
+            "max": 166.49000000000524
+          },
+          "over50": 11,
+          "over100": 3,
+          "scenarios": [
+            "forest-low",
+            "lake",
+            "river",
+            "canyon-turn",
+            "boost",
+            "boost-release",
+            "combat",
+            "short-warp",
+            "long-warp",
+            "cube-face",
+            "pole"
+          ]
+        }
+      ]
+    },
+    "descentV42": {
+      "before": [
+        {
+          "cache": "cold",
+          "worldHash": "b7aefd351cef8c3f6e23e5878c5369987fa41d29e28a4fe9297c891ad09efada",
+          "frames": 908,
+          "firstReferenceDetailMs": 16511.959999993443,
+          "arrivalAfterMs": 12384.615384615385,
+          "settledMs": 16593,
+          "lastCellMeters": 3.814697265625,
+          "peakTrackedTerrainBytes": 170887112,
+          "largestTransitionGroup": 510,
+          "cancelledJobsDuringRecord": 4,
+          "summary": {
+            "cpu": {
+              "p50": 5.399999991059303,
+              "p95": 8.465000003576279,
+              "p99": 13.284999996423721,
+              "max": 181.58500000834465
+            },
+            "interval": {
+              "p50": 16.67000000000189,
+              "p95": 33.19000000000233,
+              "p99": 49.919999999998254,
+              "max": 299.8400000000038
+            },
+            "over50": 8,
+            "over100": 3
+          }
+        },
+        {
+          "cache": "warm",
+          "worldHash": "b7aefd351cef8c3f6e23e5878c5369987fa41d29e28a4fe9297c891ad09efada",
+          "frames": 943,
+          "firstReferenceDetailMs": 16238.439999997616,
+          "arrivalAfterMs": 12384.615384615385,
+          "settledMs": 16240,
+          "lastCellMeters": 3.814697265625,
+          "peakTrackedTerrainBytes": 194444404,
+          "largestTransitionGroup": 569,
+          "cancelledJobsDuringRecord": 5,
+          "summary": {
+            "cpu": {
+              "p50": 5.219999998807907,
+              "p95": 7.399999991059303,
+              "p99": 9.780000001192093,
+              "max": 190.1499999910593
+            },
+            "interval": {
+              "p50": 16.669999999998254,
+              "p95": 16.82499999999709,
+              "p99": 33.24500000000262,
+              "max": 183.50500000000466
+            },
+            "over50": 3,
+            "over100": 1
+          }
+        }
+      ],
+      "after": [
+        {
+          "cache": "cold",
+          "worldHash": "b7aefd351cef8c3f6e23e5878c5369987fa41d29e28a4fe9297c891ad09efada",
+          "frames": 1024,
+          "firstReferenceDetailMs": 11304.570000007749,
+          "arrivalAfterMs": 12384.615384615385,
+          "settledMs": 21527,
+          "lastCellMeters": 0.95367431640625,
+          "peakTrackedTerrainBytes": 213895556,
+          "largestTransitionGroup": 366,
+          "cancelledJobsDuringRecord": 0,
+          "summary": {
+            "cpu": {
+              "p50": 5.5250000059604645,
+              "p95": 8.434999987483025,
+              "p99": 15.780000001192093,
+              "max": 59.25
+            },
+            "interval": {
+              "p50": 16.68999999999869,
+              "p95": 33.465000000000146,
+              "p99": 49.9900000000016,
+              "max": 149.97000000000116
+            },
+            "over50": 10,
+            "over100": 1
+          }
+        },
+        {
+          "cache": "warm",
+          "worldHash": "b7aefd351cef8c3f6e23e5878c5369987fa41d29e28a4fe9297c891ad09efada",
+          "frames": 832,
+          "firstReferenceDetailMs": 8601.369999989867,
+          "arrivalAfterMs": 12384.615384615385,
+          "settledMs": 17082,
+          "lastCellMeters": 3.814697265625,
+          "peakTrackedTerrainBytes": 211506720,
+          "largestTransitionGroup": 319,
+          "cancelledJobsDuringRecord": 0,
+          "summary": {
+            "cpu": {
+              "p50": 5.409999996423721,
+              "p95": 9.055000007152557,
+              "p99": 16.769999995827675,
+              "max": 58.81999999284744
+            },
+            "interval": {
+              "p50": 16.685000000004948,
+              "p95": 33.44499999999971,
+              "p99": 50.05000000000291,
+              "max": 99.80500000000029
+            },
+            "over50": 9,
+            "over100": 0
+          }
+        }
+      ]
+    }
+  },
+  "limitations": [
+    "One saved run per Unity revision, not a repeated randomized A/B experiment; material changes and warm operating-system cache confound attribution.",
+    "Unity covers a finite 32 km region without trees, enemies, volumetric clouds or global warp; browser/native speedup ratios are not valid.",
+    "Unity fixed sample spacing is 7.8125 m; browser reference-point meshes reached 0.9537-3.8147 m. Same world hash is not equal mesh or material quality.",
+    "Browser V41 flight uses a different world from the Unity and V42 data; browser presentation is about 60 Hz while Unity VSync is disabled.",
+    "Unity startup clocks, browser flight-click clocks and descent settlement clocks have different starting events and completion criteria.",
+    "Unity CPU frame time includes waits and is not equivalent to browser CPU submission timing. CPU and GPU quantiles must not be summed.",
+    "Unity benchmark boost-release motion advances at 300 m/s while its reported speed/prefetch velocity varies 500 to 194.444 m/s; interactive boost/landing is a separate functional smoke test.",
+    "Unity screenshot frames are included. Saved Unity results contain phase aggregates, not per-frame traces, so combined p95/p99 and the percentage exceeding 10 ms cannot be reconstructed.",
+    "Browser V42 recording includes post-descent settlement; before and after windows differ in duration. GPU timestamps are absent in that test.",
+    "Zero working-set result means unavailable, not zero RAM; GPU mesh estimates exclude textures and driver allocations."
+  ]
+}
