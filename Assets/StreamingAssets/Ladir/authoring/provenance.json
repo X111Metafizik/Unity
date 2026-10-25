@@ -1,0 +1,91 @@
+{
+  "source": "https://github.com/X111Metafizik/ladir",
+  "commit": "34841d6abc1c1c12251c2ace18ffb853895db16f",
+  "purpose": "Unmodified canonical authoring generator. Gameplay uses the independently parity-tested C# sampler.",
+  "files": [
+    {
+      "path": "core/world.mjs",
+      "sha256": "224488eb49bd3fd0c1d1b02f3ed849d02b9545503530ee8011713432025ece01"
+    },
+    {
+      "path": "core/landforms.mjs",
+      "sha256": "e9a36453f64d08d03ef9e68e1d1b9d7e886c00486882b48bd9d5d7cba7172b74"
+    },
+    {
+      "path": "core/math.mjs",
+      "sha256": "4c952254a5fafc9fd572f812c0ced314adbb354948de2142abd1fb380c6eccea"
+    },
+    {
+      "path": "wasm/runtime.mjs",
+      "sha256": "2789020a973f99a044a4c694dad7782c44721ca1f00ea8b002188f31b8d9c7c3"
+    },
+    {
+      "path": "core/noise-js.mjs",
+      "sha256": "b4f3c835535337dbb82dffcdb229777d26b9a18e23c800b62e6626ec86e2710e"
+    },
+    {
+      "path": "core/cube.mjs",
+      "sha256": "77cabc472c0bd8dd8221b4169120c0859b1df5e8b968951bdf7ef96ba6d06802"
+    },
+    {
+      "path": "core/terrain.mjs",
+      "sha256": "ae4ee4e88502134b63af6136382c35f8cc22bc4df47bebbffe087bbfdc03d883"
+    },
+    {
+      "path": "core/surface-source.mjs",
+      "sha256": "c8902415d1589c01d37430e4ee2b19d45c494bb24bc912648aa128a4c8e53e3d"
+    },
+    {
+      "path": "core/ecology.mjs",
+      "sha256": "516c50132a5f66a7f27d92652996951ea8993dfa59aee30a58f69b133545b629"
+    },
+    {
+      "path": "core/relief.mjs",
+      "sha256": "cd530fe915d7b4e405a35c4a642e9c7cebc11d621ef45862c5130bb58aecda37"
+    },
+    {
+      "path": "core/terrain-stamps.mjs",
+      "sha256": "308128902e663c5f51d3733861407b1cad405fc6cfbdfa7903758943968ed26e"
+    },
+    {
+      "path": "core/stamp-catalog.mjs",
+      "sha256": "944ff84d4f859aaeb817c7a224feb3604a36d7afc848c455a237d3c495f31bb7"
+    },
+    {
+      "path": "core/stamp-cache.mjs",
+      "sha256": "6f523e1184e1d0a4b1bb475017b2c6d3cc392cc88883f9b03db1aa55d04fa3d7"
+    },
+    {
+      "path": "core/river-network.mjs",
+      "sha256": "f41b0ffa6dbc7cf343b09aab098d06887dfadebdc588b93592ede909f339bf3a"
+    },
+    {
+      "path": "core/hydrology.mjs",
+      "sha256": "bad3c19bd18dc813cda22888270a169b826ceabbba40c4000d45afbfae8024d3"
+    },
+    {
+      "path": "core/regions.mjs",
+      "sha256": "d39017f5f85974a98da453ae566da6d5027c68ce28ffda478f260d2a49aaea8b"
+    },
+    {
+      "path": "core/build-id.mjs",
+      "sha256": "6922cd64a45838ddf953aa159e69112e2ec576678e0e46251e1d15a6a71c7af4"
+    },
+    {
+      "path": "core/navigation.mjs",
+      "sha256": "6ad18084437ca7cc680fecb48b3f27c6f7bbb649144485a22b2b3e551fe8adcb"
+    },
+    {
+      "path": "core/stamp-library.mjs",
+      "sha256": "40796872772d725784920d827ba2c08b08067b27976bca9b30cab3f1c639f2cb"
+    },
+    {
+      "path": "io/bundle.mjs",
+      "sha256": "8956bbaae46d03ed15ed823e2d462e0c0234ae4fb39104b88b6eb392bc47e962"
+    },
+    {
+      "path": "assets/terrain-stamps/atlas.bin",
+      "sha256": "72f5f9fac3a8f165be21f74d3ab36c62363ea16118b810edc1cd29d9a2bc5526"
+    }
+  ]
+}

@@ -1,0 +1,118 @@
+#ladir { position: absolute; left: 0; top: 0; right: 0; bottom: 0; color: rgb(202,225,225); font-size: 12px; }
+.map-markers { position: absolute; left: 0; right: 0; top: 0; bottom: 0; }
+.map-marker { position: absolute; font-size: 9px; padding: 4px 8px; background-color: rgba(9,27,35,.7); }
+.viewport-tools { position: absolute; left: 24px; top: 74px; flex-direction: row; }
+Label { -unity-text-align: middle-left; }
+Button { color: rgb(174,202,205); background-color: rgba(19,37,47,.94); border-width: 1px; border-color: rgba(134,187,188,.18); border-radius: 5px; padding: 9px 13px; margin: 2px; font-size: 11px; }
+Button:hover { background-color: rgb(38,68,76); color: rgb(221,247,240); border-color: rgb(108,170,167); }
+Button:disabled { opacity: .55; }
+.primary { background-color: rgb(164,215,201); color: rgb(13,39,43); margin-top: 20px; }
+.primary:hover { background-color: rgb(198,245,229); color: rgb(13,39,43); }
+.topbar { position: absolute; top: 0; left: 0; right: 0; height: 64px; flex-direction: row; align-items: center; padding: 0 24px; background-color: rgb(9,19,26); border-bottom-width: 1px; border-color: rgba(131,171,178,.16); }
+.planet-mark { font-size: 30px; margin-right: 13px; color: rgb(180,223,215); }
+.brand { width: 180px; }
+.brand-name { font-size: 21px; letter-spacing: 4px; color: rgb(217,235,232); }
+.eyebrow { font-size: 9px; letter-spacing: 1.6px; color: rgb(151,186,189); margin-top: 4px; margin-bottom: 8px; }
+.brand .eyebrow { font-size: 7px; letter-spacing: 2.2px; margin-top: 2px; margin-bottom: 0; }
+.mode-switch { flex-direction: row; border-width: 1px; border-color: rgba(126,177,177,.19); border-radius: 6px; padding: 2px; }
+.mode-switch Button { border-width: 0; background-color: rgba(15,30,38,.7); }
+.spacer { flex-grow: 1; align-items: center; }
+.seed-caption { font-size: 10px; letter-spacing: 2px; color: rgb(96,126,138); }
+.statusbar { position: absolute; bottom: 0; left: 0; right: 0; height: 29px; background-color: rgb(9,18,25); flex-direction: row; align-items: center; padding: 0 20px; font-size: 9px; }
+.statusbar .muted { font-size: 7px; letter-spacing: 1.5px; }
+.editor, .flight { position: absolute; top: 64px; bottom: 29px; left: 0; right: 0; }
+.views { position: absolute; top: 20px; left: 24px; flex-direction: row; background-color: rgba(9,22,30,.8); border-radius: 6px; padding: 3px; }
+.views Button { background-color: rgba(0,0,0,0); border-width: 0; }
+.altitude { position: absolute; right: 351px; top: 26px; font-size: 17px; color: rgb(196,229,230); -unity-text-align: upper-right; }
+.world-caption { position: absolute; left: 38px; bottom: 42px; }
+.world-title { font-size: 48px; color: rgb(222,229,226); -unity-font-style: normal; }
+.world-summary { font-size: 11px; color: rgb(156,190,196); margin-top: 6px; }
+.places { flex-direction: row; margin-top: 22px; }
+.places Button { font-size: 10px; padding: 13px 16px; background-color: rgba(13,30,39,.82); }
+.sidebar { position: absolute; right: 0; top: 0; bottom: 0; width: 312px; padding: 26px 22px; background-color: rgba(10,22,30,.97); border-left-width: 1px; border-color: rgba(136,179,184,.15); }
+.panel-title { font-size: 23px; margin-bottom: 21px; color: rgb(216,231,229); }
+.tabs, .row { flex-direction: row; }
+.tabs { margin-bottom: 20px; }
+.tabs Button { flex-grow: 1; background-color: rgba(0,0,0,0); border-width: 0; border-bottom-width: 1px; border-radius: 0; font-size: 10px; padding: 10px 4px; }
+.geo { flex-grow: 1; flex-shrink: 1; }
+.geo ScrollView { flex-grow: 1; }
+.muted { color: rgb(119,153,162); font-size: 10px; white-space: normal; }
+.row Button { flex-grow: 1; font-size: 10px; }
+TextField { margin-bottom: 7px; }
+.unity-text-field__input, .unity-base-popup-field__input { background-color: rgb(20,38,47); color: rgb(187,218,216); border-width: 1px; border-color: rgba(119,173,172,.18); border-radius: 4px; padding: 6px; }
+.unity-base-field__label { min-width: 0; color: rgb(151,182,186); font-size: 10px; margin-bottom: 5px; }
+.unity-base-field { margin-bottom: 15px; flex-direction: column; }
+.unity-base-slider__input { min-height: 22px; flex-direction: row; align-items: center; }
+.unity-base-slider__text-field { margin-bottom: 0; flex-direction: row; }
+.unity-base-slider__text-field .unity-text-field__input { padding: 2px; }
+.unity-scroller--vertical { width: 7px; }
+.unity-scroller--vertical .unity-scroller__low-button, .unity-scroller--vertical .unity-scroller__high-button { display: none; }
+.unity-base-slider__dragger { background-color: rgb(151,207,195); border-width: 0; border-radius: 10px; width: 10px; height: 10px; }
+.unity-base-slider__tracker { background-color: rgb(45,75,83); height: 2px; }
+.unity-base-slider__text-field { width: 48px; font-size: 9px; margin-left: 6px; }
+.diagnostics { margin-top: 14px; margin-bottom: 28px; font-size: 11px; color: rgb(166,199,198); }
+.flight-heading { position: absolute; left: 30px; top: 28px; }
+.flight-state { font-size: 12px; letter-spacing: 1.5px; color: rgb(211,238,230); margin-top: 9px; }
+.flight-readouts { position: absolute; left: 32px; top: 140px; width: 230px; }
+.flight-readouts .eyebrow { margin-bottom: 2px; }
+.flight-value { font-size: 40px; letter-spacing: -1.8px; color: rgb(218,243,238); margin-bottom: 26px; }
+.compass { font-size: 10px; color: rgb(167,191,194); }
+.flight-controls { position: absolute; right: 22px; top: 24px; width: 264px; padding: 18px; background-color: rgba(11,26,35,.92); border-width: 1px; border-color: rgba(135,201,195,.17); border-radius: 8px; }
+.flight-controls .eyebrow { margin-top: 0; margin-bottom: 6px; }
+.flight-controls .unity-base-field { margin-top: 10px; margin-bottom: 3px; }
+.flight-controls Button { font-size: 9px; padding: 7px 3px; }
+.key-row { flex-direction: row; justify-content: space-between; height: 25px; align-items: center; }
+.key-row Label { font-size: 10px; }
+.key-row .muted { font-size: 10px; -unity-text-align: middle-right; }
+.reticle { position: absolute; left: 50%; top: 50%; width: 40px; height: 40px; margin-left: -20px; margin-top: -20px; border-width: 1px; border-color: rgba(166,233,223,.55); border-radius: 30px; }
+.reticle-dot { flex-grow: 1; -unity-text-align: middle-center; font-size: 23px; }
+.flight-systems { position: absolute; right: 28px; bottom: 28px; width: 230px; }
+.flight-systems .eyebrow { margin-top: 14px; margin-bottom: 5px; }
+.unity-progress-bar { height: 4px; margin: 0; }
+.unity-progress-bar__background { background-color: rgb(25,52,61); border-width: 0; border-radius: 3px; }
+.unity-progress-bar__progress { background-color: rgb(134,222,202); border-width: 0; border-radius: 3px; }
+.unity-progress-bar__title { display: none; }
+.radar { position: absolute; left: 28px; bottom: 31px; width: 142px; height: 142px; border-radius: 100px; border-width: 1px; border-color: rgba(133,189,179,.5); background-color: rgba(9,35,41,.65); }
+.radar-player { position: absolute; left: 47%; top: 44%; color: rgb(199,255,241); }
+.radar-contact { position: absolute; width: 4px; height: 4px; border-radius: 4px; background-color: rgb(255,153,126); }
+.targets { position: absolute; left: 0; right: 0; top: 0; bottom: 0; }
+.enemy-label { position: absolute; width: 100px; align-items: center; color: rgb(255,172,148); font-size: 8px; }
+.enemy-cross { font-size: 28px; }
+.enemy-distance { font-size: 8px; margin-top: 3px; }
+.locked { color: rgb(255,226,160); }
+.flight-message { position: absolute; bottom: 118px; left: 24%; right: 24%; -unity-text-align: middle-center; white-space: normal; font-size: 10px; }
+.skills { position: absolute; left: 50%; bottom: 22px; width: 554px; margin-left: -277px; }
+.skill-row { flex-direction: row; }
+.skill-slot { height: 66px; flex-grow: 1; flex-basis: 0; margin: 0 3px; padding: 0; border-color: rgba(129,207,199,.33); background-color: rgba(9,27,37,.93); }
+.skill-slot:disabled { opacity: .6; }
+.skill-key { position: absolute; left: 6px; top: 5px; font-size: 10px; color: rgb(155,185,197); }
+.skill-icon { position: absolute; left: 0; right: 0; top: 7px; font-size: 30px; -unity-text-align: middle-center; color: rgb(162,235,207); }
+.skill-title { position: absolute; bottom: 8px; left: 0; right: 0; font-size: 7px; -unity-text-align: middle-center; }
+.skill-time { position: absolute; top: 14px; left: 0; right: 0; -unity-text-align: middle-center; font-size: 18px; color: white; background-color: rgba(8,18,25,.6); }
+.warp-panel { position: absolute; top: 144px; left: 50%; width: 388px; margin-left: -194px; padding: 14px 16px; background-color: rgba(8,21,35,.84); border-width: 1px; border-color: rgba(133,188,229,.25); border-radius: 6px; }
+.warp-panel .row { margin: 10px 0; }
+.warp-panel Button { font-size: 13px; padding: 9px 4px; }
+.selected { border-color: rgb(150,219,255); background-color: rgb(41,86,107); color: rgb(217,245,255); }
+.topbar { height: 74px; background-color: rgb(12,17,24); }
+.editor, .flight { top: 74px; bottom: 34px; }
+.statusbar { height: 34px; background-color: rgb(12,17,24); }
+.sidebar { left: 20px; right: auto; top: 20px; bottom: 20px; width: 292px; padding: 21px 19px; border-width: 1px; border-color: rgba(255,255,255,.13); border-radius: 7px; background-color: rgb(16,22,30); }
+.appearance, .inspect { flex-grow: 1; flex-shrink: 1; }
+.views { left: 340px; top: 20px; }
+.viewport-tools { left: auto; right: 24px; top: 23px; }
+.altitude { right: 28px; top: 85px; }
+.world-caption { left: 348px; bottom: 68px; }
+.world-title { font-size: 51px; }
+.world-caption .places { flex-direction: column; margin-top: 20px; }
+.world-caption .places Button { font-size: 10px; padding: 9px 15px; }
+.planet-mark { color: rgb(222,180,122); }
+.sidebar .eyebrow, .sidebar .muted { color: rgb(126,139,153); }
+.sidebar .primary { background-color: rgb(222,180,122); color: rgb(27,25,21); }
+.sidebar .unity-base-slider__dragger { background-color: rgb(222,180,122); }
+.sidebar .unity-text-field__input, .sidebar .unity-base-popup-field__input { background-color: rgb(9,14,21); color: rgb(230,233,237); }
+.sidebar .unity-base-slider__text-field .unity-text-field__input { background-color: rgba(0,0,0,0); border-width: 0; color: rgb(222,180,122); }
+.sidebar .tabs Button { color: rgb(126,139,153); }
+.pause-screen { position: absolute; left: 0; right: 0; top: 0; bottom: 0; align-items: center; justify-content: center; background-color: rgba(2,16,25,.45); }
+.pause-card { width: 340px; padding: 28px; background-color: rgba(16,29,39,.98); border-width: 1px; border-color: rgba(83,138,133,.4); border-radius: 10px; }
+.pause-card .eyebrow, .pause-card .panel-title { -unity-text-align: middle-center; }
+.basin-map { position: absolute; right: 24px; bottom: 32px; width: 312px; padding: 16px; border-width: 1px; border-radius: 6px; border-color: rgb(95,136,145); background-color: rgb(12,22,30); font-size: 10px; }

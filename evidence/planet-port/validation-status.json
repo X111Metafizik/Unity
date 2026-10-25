@@ -1,0 +1,22 @@
+{
+  "sourceWebCommit": "34841d6abc1c1c12251c2ace18ffb853895db16f",
+  "unityVersion": "6000.0.80f1",
+  "date": "2026-10-25",
+  "portableValidation": {
+    "dotnetSdk": "9.0.200",
+    "csharpLanguageVersion": "9.0",
+    "unityApiAssemblyCheck": { "passed": true, "errors": 0, "warnings": 0 },
+    "terrainCases": 2118,
+    "vegetationTrees": 2439,
+    "flightPackageAndLifetimeAssertions": 1531,
+    "existingNodeTests": { "passed": 3, "skipped": 0 }
+  },
+  "nativeValidation": {
+    "playerBuild": "not completed",
+    "shaderCompilation": "not validated",
+    "visualAcceptance": "not validated",
+    "performance": "not measured",
+    "blockingObservation": "The separate Unity batch attempt ran out of memory during ShaderGraph import. The most recent disk check had 92774400 bytes free. The already-open editor has not refreshed the new source files.",
+    "noHistoricalFpsReused": true
+  }
+}

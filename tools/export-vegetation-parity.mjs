@@ -1,0 +1,6 @@
+import {readFile,writeFile} from 'node:fs/promises';import {resolve,join} from 'node:path';import {pathToFileURL} from 'node:url';
+const source=resolve(process.argv[2]),root=resolve(import.meta.dirname,'..');
+const {deserializePlanet}=await import(pathToFileURL(join(source,'io/bundle.mjs'))),{directionFace}=await import(pathToFileURL(join(source,'core/cube.mjs'))),{vegetationTile}=await import(pathToFileURL(join(source,'core/vegetation.mjs')));
+const world=await deserializePlanet(await readFile(join(root,'Assets/StreamingAssets/Ladir/planet/river-v42.planet'))),parity=JSON.parse(await readFile(join(root,'evidence/planet-port/parity-fixtures.json'))),level=Math.ceil(Math.log2(2*world.radiusMeters/1400)),size=2/(2**level),keys=new Set(),cases=[];
+for(const c of parity.cases.filter(c=>c.type==='terran'&&c.forest>.05)){const [face,u,v]=directionFace(c.d),tx=Math.floor((u+1)/size),ty=Math.floor((v+1)/size),key=[face,tx,ty].join('/');if(keys.has(key))continue;keys.add(key);cases.push({face,tx,ty,level,trees:vegetationTile(world,face,tx,ty,level)});if(cases.length===12)break;}
+await writeFile(join(root,'evidence/planet-port/vegetation-fixtures.json'),JSON.stringify(cases));console.log({tiles:cases.length,trees:cases.reduce((n,c)=>n+c.trees.length,0)});

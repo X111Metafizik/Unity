@@ -1,0 +1,5 @@
+<linker>
+  <!-- Saved worlds and opt-in diagnostics use Newtonsoft reflection. Keep the
+       native sampler/flight DTOs identical across Mono and IL2CPP builds. -->
+  <assembly fullname="Ladir.Planet" preserve="all" />
+</linker>

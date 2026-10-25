@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "checks": [
+    "C# save loads in the unchanged web reader with the same world hash",
+    "Bundled authoring generator creates the same seed identically on repeat",
+    "New seed package passes original hydrology and integrity validation"
+  ],
+  "original": "b7aefd351cef8c3f6e23e5878c5369987fa41d29e28a4fe9297c891ad09efada",
+  "newSeed": "78a485abe5e28096ae4d8b135571b38a730ecc6d7faa4435bd01a7f3d5bf0f2a"
+}

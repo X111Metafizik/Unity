@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Ladir/Scenes/PlanetStudio.unity
+    guid: 18b6334c40704494eacd9cbbd84583a7
+  - enabled: 0
     path: Assets/Ladir/Scenes/ReferenceFlight.unity
     guid: 798114b856e11d842833f5cc187d2032
   m_configObjects: {}

@@ -4,6 +4,10 @@
 /obj/
 /UserSettings/
 /Builds/
+tools/terrain-parity/bin/
+tools/terrain-parity/obj/
+tools/compile-unity/bin/
+tools/compile-unity/obj/
 /.vs/
 /.idea/
 /*.csproj
@@ -15,5 +19,22 @@
 /Assets/Resources.meta
 /evidence/unity-v1/*.log
 /evidence/unity-v1/run1/
+/evidence/planet-port/*.log
+/evidence/planet-port/**/*.log
+/evidence/planet-port/native-player-baseline/
+# Intermediate local development captures; final and visible baseline are published.
+/evidence/planet-port/native-run1/
+/evidence/planet-port/native-player-atmosphere/
+/evidence/planet-port/native-player-integrated/
+/evidence/planet-port/native-player-seams/
+/evidence/planet-port/editor/
 .DS_Store
 Thumbs.db
+/evidence/performance/**/*.raw
+/evidence/performance/**/*.log
+/evidence/performance/**/frames.json
+/evidence/performance/before-1/
+/evidence/performance/before-2/
+# Exploratory captures with a second player open are excluded from final A/B.
+/evidence/performance/baseline/
+/evidence/performance/optimized-1/

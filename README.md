@@ -1,69 +1,96 @@
-# LADİR — Unity reference flight
+# LADİR — native Planet Studio port
 
-A **32 × 32 km Windows prototype**, built with Unity **6000.0.80f1**, URP 17.0.4, Burst and Jobs. The browser game is maintained separately in [LADIR](https://github.com/X111Metafizik/ladir).
+Unity **6000.0.80f1 / URP 17** source port of the [LADİR browser project](https://github.com/X111Metafizik/ladir), based on web commit `34841d6abc1c1c12251c2ace18ffb853895db16f`.
 
-This is the first migration slice: canonical terrain and water from `fixtures/river-v42.planet`, the supplied Starlight Voyager model, flight, landing, boost, orbit camera and repair. The exported world has an **8,000 km diameter / 4,000 km radius**. This scene covers one finite reference region; it does not render the entire sphere.
+**Status: the global scene builds and runs as a Windows player.** Terrain, flight, native UI, atmosphere, FFT water and warp have rendered evidence. This is still a draft migration: pixel-identical rendering, continuous LOD morphing and the shared GPU displacement/global bake path are not complete. See the [startup and flight stutter investigation](docs/PERFORMANCE_STUTTER_FIX.md) and [earlier native validation](docs/NATIVE_VALIDATION.md). The old finite prototype's FPS is not used for this scene.
 
-## Open and fly
+## Open the new scene
 
-1. Clone this repository and add its root folder in Unity Hub, using **6000.0.80f1**. Use a short local path such as `C:/Projects/Unity` to avoid Windows/Mono path-length errors.
-2. Let packages and assets import. Open **Assets/Ladir/Scenes/ReferenceFlight.unity**. The **LADIR → 1 · Create or open reference flight** menu can recreate the setup.
-3. Press **Play**. Initial terrain stays visible while fine terrain streams in.
+1. Open this repository in Unity 6000.0.80f1 and allow import to finish.
+2. Choose **LADIR → 4 · Create or open full Planet Studio**.
+3. The generated `Assets/Ladir/Scenes/PlanetStudio.unity`, URP renderer, materials and UI Toolkit panel are also included. Press **Play**, then **Uçuş modu**.
+4. Existing unsaved scenes are preserved. Save them before switching scenes.
+
+The default package is the original `river-v42.planet`: **8,000 km diameter / 4,000 km radius**, with the original stamp height arrays, erosion, rivers, lakes and world identity. Gameplay and surface sampling are native C#. Generating a **new seed** currently invokes the bundled, unchanged original authoring generator using **Node.js 24+**; opening and playing existing packages does not require Node or a browser.
+
+## Implemented in this port
+
+- Double-precision spherical world, floating render origin, six-face quadtree, background terrain jobs, parent coverage, horizon culling, upload budget and destination prefetch. Mixed LOD edges bind to the displayed coarser triangle, including cube-face transitions.
+- C# terrain/stamp/hydrology/biome sampler, shared metric surface for flight and water, clipped shores, original mineral texture, original three tree species and deterministic tree placement. Tree roots bind to the displayed LOD triangle.
+- Native editor and flight UI: seed/presets, appearance and JSON settings, inspection, exploration markers, surface selection, package opening/saving, ford/strait route preview, flight readouts, radar, target labels and eight skill slots. A background 32 × 32 km drainage inspector samples the final terrain.
+- Supplied Voyager mesh, 700 km/h cruise, 1,800 km/h boost, landing/takeoff, gravity-assisted dives, swept terrain collisions, orbit camera, enemies and pooled projectiles/explosions.
+- Warp distances 1,000 / 3,000 / 6,000 / 9,000 / 12,000 km, three-second charge, animated travel and deceleration; repair 50% over five seconds with a 30-second cooldown.
+- Half-resolution atmosphere and procedural clouds using the original 64³ noise asset, optical-depth lookup, depth-aware temporal reprojection, density-selected lightning, bright compact thrusters, navigation lights, speed streaks and a transparent warp tunnel attached to the interpolated ship pose.
+- Original 64 × 64 FFT ocean spectrum on a compute shader, with a CPU fallback. GPU output is compared numerically to the portable reference during the native smoke test.
+
+The screenshots and timing data describe actual rendered runs on a GTX 1660 Ti, not a guarantee for other hardware. See [migration notes](docs/PLANET_PORT.md).
+
+## Controls
 
 | Input | Action |
 | --- | --- |
-| Mouse position | Turn and pitch |
-| A / D | Strafe |
-| Space | Boost, 1,800 km/h |
-| S / B | Brake / cut speed; release for 700 km/h cruise |
-| C | Toggle landing assistant / take off |
-| Ctrl + right mouse drag | Orbit around the ship |
-| Mouse wheel | Camera distance |
-| 2 | Repair 50% over 5 seconds, 30-second cooldown |
-| R / Escape | Reset flight / pause flight |
+| Mouse | Flight steering; editor surface navigation |
+| Space / S | Boost / brake |
+| A / D; double tap | Strafe; evasive roll |
+| B / W | Hover / cruise |
+| Left / right mouse | Gun / guided missile |
+| Ctrl + right drag | Ship orbit camera |
+| Shift | Select target |
+| C | Land / take off |
+| 1 + wheel | Select warp distance during charge |
+| 2 | Repair |
+| Delete / Esc | Cockpit view / pause |
+| H | Toggle HUD |
 
-## Data and geometry
+## Validation
 
-- **256 files**, each a 2 × 2 km tile with 257 × 257 samples. Finest spacing is **7.8125 m**. A separate overview uses 62.5 m samples. This is not a claim of identical sampling density to the browser's adaptive mesh.
-- The exporter calls the existing `sampleTerrain` and `biomeColor`; it does not create an independent Unity terrain generator. Float32 height, water-level and material-color samples are saved with SHA-256 checksums, seed, generator identity and metric coordinates.
-- Unity X/Z follow the reference region. Rendered Y is altitude above sea level minus a local spherical-sag approximation, `r² / (2R)`. This local coordinate system is not the completed planetary floating-origin system.
-- Terrain grids have 16, 32, 64, 128 or 256 cells. Fine edges follow their coarser neighbor's chord. A new set of meshes becomes visible together, after its edge contracts are ready. Old valid meshes remain visible during preparation.
-- File/decompression tasks are limited to three; Burst geometry jobs to four; CPU mesh submission targets a 2 ms frame budget, allowing at least one mesh to make progress. An individual large upload can exceed that budget and is measured.
-- Fine sample cache has a 96 MiB budget. Immutable CPU collision uses the currently displayed terrain triangles, including stitched edges. Water is clipped against the sampled bed; flat submerged blocks are merged.
-- Predictive tile loading follows two seconds of ship velocity. Boost does not reduce near detail. LOD currently uses metric distance with hysteresis; full screen-error LOD and geomorphing are later work.
+The committed [evidence](evidence/planet-port) records:
 
-## Reproduce
+| Check | Result |
+| --- | --- |
+| Terrain, six world types, shared faces and hydrology | 2,118 cases, zero failures; maximum height difference 6.96e-11 m |
+| Original tree placement | 8 tiles / 2,439 trees match; maximum root difference 3.26e-10 m |
+| Flight, landing, takeoff, warp, repair, land/water navigation and package checks | 1,564 assertions passed (includes time-series samples and lossless typed-header loading) |
+| Reference drainage analysis | 1,089 nodes match original flow receivers and basins |
+| Ocean spectrum against direct DFT | 216 samples; maximum wave difference 2.40e-7 m |
+| Native GPU ocean / mixed LOD seams | Measured in the rendered smoke report; thresholds 1e-4 m / 0.1 m |
+| C# save reopened by the unchanged web reader | Same canonical world hash |
+| Existing regional package/model tests | 3 passed, no skips |
+| Unity API compile check | C# 9 against installed Unity 6 assemblies: zero errors/warnings |
+| Windows player, shaders, rendered smoke | **Passed**; editor, flight, cloud combat, boost release, 1,000 km space warp and basin inspector captured |
 
-The regional package and extracted ship are committed. **Playing or building in Unity does not require Node.js or the web project.**
+With .NET 9 and Node 24, after Unity package import:
 
-Optional package integrity checks (Node.js 24+, no npm dependencies):
-
-```sh
-npm test
+```powershell
+./tools/test-native-kernel.ps1
+$env:LADIR_WEB_SOURCE = 'C:/Projects/ladir'
+npm.cmd test
 ```
 
-To export again, clone the [web source](https://github.com/X111Metafizik/ladir) separately, use source commit `34841d6abc1c1c12251c2ace18ffb853895db16f`, and run `npm ci` in that checkout. Then run from this Unity repository:
+`tools/compile-unity` is an additional API/syntax check. It is **not** the Unity compiler, a shader test, or a player build.
 
-```sh
-npm run export:region -- --source "../ladir"
-```
-
-This command replaces the regional package and extracted ship with samples from that web checkout. Generation may take minutes; it is offline, while the native player reads the committed package. Set `LADIR_WEB_SOURCE` to the web checkout path before `npm test` to enable the optional canonical generator parity test. Without it, that one test is explicitly skipped; package and shared-edge checks still run.
-
-In Unity, **LADIR → 2 · Validate data and LOD** checks every tile checksum, shared edges, overview/fine parity, Burst jobs, water geometry, corrupt data rejection and physical scale. **LADIR → 3 · Build Windows prototype** runs validation and produces a Windows build. With the matching editor on PATH:
+Native build (or choose **LADIR → 5 · Build Planet Studio for Windows** in the open editor):
 
 ```text
-Unity.exe -batchmode -nographics -projectPath "C:/Projects/Unity" -executeMethod Ladir.Editor.PrototypeSetup.Build --ladir-output "C:/Projects/Unity/Builds/Windows" -logFile "C:/Projects/unity-build.log"
-Ladir.exe --ladir-benchmark --ladir-output "C:/short/ladir-results"
-Ladir.exe --ladir-control-smoke --ladir-output "C:/short/ladir-controls"
+Unity.exe -batchmode -nographics -projectPath "C:/Projects/Unity" -executeMethod Ladir.Editor.PlanetSetup.Build -logFile "C:/Projects/planet-build.log"
+Builds/Planet/Ladir.exe --planet-smoke "C:/Projects/planet-smoke" --extended -screen-width 1440 -screen-height 1000 -screen-fullscreen 0
 ```
 
-The benchmark records startup and lake, river, canyon, mountain and boost-release camera routes at 1440 × 1000, with VSync disabled and 4× MSAA. CPU and GPU timings of zero mean the timing API was unavailable. Upload timing is CPU submission, not measured GPU copy time. Task latencies overlap. Screenshot frames are included in the first diagnostic run, so screenshot capture can contribute long frames.
+Run the player visibly. A hidden/minimized window can skip rendering and produce meaningless frame rates; the rejected hidden run is excluded from the evidence. For normal play, use `BASLAT-UNITY.cmd` after building; it prefers the tested `Builds/PlanetAOT` player when present, otherwise `Builds/Planet`. Rebuild the AOT player after source changes if you continue using that launcher. Launch either executable directly to choose a specific backend.
 
-Use a **visible player window** for rendering benchmarks. A hidden window can skip rendering and produces invalid GPU/FPS conclusions. `--ladir-no-screenshots` disables capture overhead. The independent control smoke test creates virtual Input System devices inside the game; it verifies boost, cruise, landing, takeoff, impact damage, repair, orbit and pause without sending operating-system input.
+For the reproducible startup/flight capture, close other game instances and keep the editor out of Play mode:
 
-## Boundaries of this prototype
+```text
+Builds/Planet/Ladir.exe --performance-run C:/Tests/ladir-performance -screen-width 1920 -screen-height 1080 -screen-fullscreen 0
+node tools/summarize-performance.mjs C:/Tests/ladir-performance
+```
 
-The web version's full planet, global warp, enemies, trees and volumetric clouds are **not ported yet**. Browser and native FPS are therefore not an equal-feature comparison. Distance-based LOD swaps can still change relief abruptly; there is no geomorph yet. The scene boundary is explicit. The initial flight controller is kinematic and samples terrain triangles; it is not a full Rigidbody aircraft model. Its scripted benchmark bypasses input/collision and must not be described as an interactive flight-physics test.
+This opt-in probe includes startup and 64 seconds of physics-step-driven flight: entry, cruise, boost/combat, release, turn, descent and recovery. The final surface check compares the reordered GPU vertex/index streams with the displayed CPU surface. Raw frame JSON is also saved as `frames.json.gz`; the summary tool can read either form. GPU, CPU, frame interval and waits are separate fields, not additive totals. The release build cannot provide Unity's frame-allocation recorder; IL2CPP also lacks the thread-allocation API in this Unity version, so unavailable allocation counters are reported explicitly.
 
-Source assets were extracted from the already supplied GLB; see [model provenance](Assets/Ladir/Source/model-provenance.json) and [credits](THIRD_PARTY_NOTICES.md). Read the [implementation report (Turkish)](docs/UNITY_PROTOTYPE.md) and the [Unity / browser test comparison (Turkish)](docs/TEST_KARSILASTIRMASI.md). Results and screenshots are recorded under [evidence/unity-v1](evidence/unity-v1/).
+**LADIR → Diagnostics → Build IL2CPP player** builds a separate `Builds/PlanetAOT` player using the installed Windows IL2CPP module and Visual Studio C++ toolchain. It restores the previous editor backend afterwards. The normal Mono build remains available for comparison. **Build development player** plus `--startup-profile C:/Tests/ladir-profile` captures a binary Unity profile; profiling runs are diagnostic and are excluded from release performance comparisons.
+
+## Existing reference prototype
+
+The independent 32 × 32 km baked prototype and its Burst/Jobs pipeline remain available through **LADIR → 1 · Create or open reference flight**. Its instructions are preserved in [REFERENCE_FLIGHT_README.md](docs/REFERENCE_FLIGHT_README.md); its old benchmark remains separate.
+
+[Asset credits](THIRD_PARTY_NOTICES.md) · [Migration notes](docs/PLANET_PORT.md) · [Original comparison](docs/TEST_KARSILASTIRMASI.md)

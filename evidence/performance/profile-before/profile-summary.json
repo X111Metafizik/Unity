@@ -1,0 +1,1050 @@
+[
+  {
+    "frame": 1,
+    "ms": 3630.55,
+    "thread": "Main Thread",
+    "samples": [
+      {
+        "name": "Main Thread",
+        "ms": 3630.550048828125
+      },
+      {
+        "name": "PlayerLoop",
+        "ms": 3630.51611328125
+      },
+      {
+        "name": "PostLateUpdate.FinishFrameRendering",
+        "ms": 1946.9666748046875
+      },
+      {
+        "name": "UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke]",
+        "ms": 1939.57275390625
+      },
+      {
+        "name": "PreLateUpdate.UIElementsUpdatePanels",
+        "ms": 777.4620361328125
+      },
+      {
+        "name": "UnityEngine.UIElementsModule.dll!UnityEngine.UIElements::UIElementsRuntimeUtilityNative.UpdatePanels() [Invoke]",
+        "ms": 777.4407958984375
+      },
+      {
+        "name": "Update Layout",
+        "ms": 666.17315673828125
+      },
+      {
+        "name": "InvokeMeasureFunction",
+        "ms": 560.093017578125
+      },
+      {
+        "name": "Inl_UniversalRenderTotal",
+        "ms": 468.78408813476563
+      },
+      {
+        "name": "Inl_RenderCameraStack",
+        "ms": 453.8695068359375
+      },
+      {
+        "name": "PostLateUpdate.UIElementsRepaintPanels",
+        "ms": 449.91482543945313
+      },
+      {
+        "name": "UnityEngine.UIElementsModule.dll!UnityEngine.UIElements::UIElementsRuntimeUtilityNative.RepaintPanels() [Invoke]",
+        "ms": 449.87921142578125
+      },
+      {
+        "name": "UIElementsRuntimeUtility.DoDispatch(Repaint Event)",
+        "ms": 447.28018188476563
+      },
+      {
+        "name": "Panel.Update.Panel",
+        "ms": 446.6156005859375
+      },
+      {
+        "name": "Update Rendering",
+        "ms": 437.2200927734375
+      },
+      {
+        "name": "EarlyUpdate.ScriptRunDelayedStartupFrame",
+        "ms": 372.90328979492188
+      },
+      {
+        "name": "CoroutinesDelayedCalls",
+        "ms": 372.90231323242188
+      },
+      {
+        "name": "Ladir.Planet.dll!Ladir.Planet::PlanetStudio.Start() [Invoke]",
+        "ms": 364.21600341796875
+      },
+      {
+        "name": "Inl_UniversalRenderPipeline.RenderSingleCameraInternal: LADİR Camera",
+        "ms": 328.47891235351563
+      },
+      {
+        "name": "Inl_RecordRenderGraph",
+        "ms": 116.77960205078125
+      },
+      {
+        "name": "Inl_On Record Render Graph",
+        "ms": 108.46430206298828
+      },
+      {
+        "name": "Update Style",
+        "ms": 87.755699157714844
+      },
+      {
+        "name": "Inl_ScriptableRenderContext.Submit",
+        "ms": 80.8272933959961
+      },
+      {
+        "name": "UniversalRenderPipeline.RenderSingleCameraInternal: LADİR Camera",
+        "ms": 80.2229995727539
+      },
+      {
+        "name": "ExecuteRenderGraph",
+        "ms": 80.1812973022461
+      },
+      {
+        "name": "Inl_ExecuteRenderGraph",
+        "ms": 75.222602844238281
+      },
+      {
+        "name": "Inl_CompileRenderGraph",
+        "ms": 68.071907043457031
+      },
+      {
+        "name": "GameObject.AddComponent",
+        "ms": 62.013698577880859
+      },
+      {
+        "name": "UnityEngine.UIElementsModule.dll!UnityEngine.UIElements::UIDocument.OnEnable() [Invoke]",
+        "ms": 60.1161003112793
+      },
+      {
+        "name": "JobHandle.Complete",
+        "ms": 57.460700988769531
+      },
+      {
+        "name": "DrawScreenSpaceUI",
+        "ms": 57.456001281738281
+      },
+      {
+        "name": "WaitForJobGroupID",
+        "ms": 57.453598022460938
+      },
+      {
+        "name": "UIEvents.IMGUIRenderOverlays",
+        "ms": 57.362300872802734
+      },
+      {
+        "name": "UITKTextJobSystem:GenerateTextJobData",
+        "ms": 57.315200805664063
+      },
+      {
+        "name": "UnityEngine.CoreModule.dll!::ExecuteJobFunction.Invoke() [Invoke]",
+        "ms": 57.250900268554688
+      },
+      {
+        "name": "GUI.Repaint",
+        "ms": 57.086601257324219
+      },
+      {
+        "name": "FontEngine.GetPairAdjustmentRecords",
+        "ms": 51.942398071289063
+      },
+      {
+        "name": "FontEngine.GetOpenTypeFontFeatures",
+        "ms": 51.383701324462891
+      },
+      {
+        "name": "FontEngine.GetPairAdjustmentRecords",
+        "ms": 43.490699768066406
+      },
+      {
+        "name": "FontEngine.GetOpenTypeFontFeatures",
+        "ms": 43.068500518798828
+      },
+      {
+        "name": "FontEngine.GetOpenTypeLayoutTables",
+        "ms": 42.328498840332031
+      },
+      {
+        "name": "FontEngine.GetOpenTypeLayoutTables",
+        "ms": 42.056800842285156
+      },
+      {
+        "name": "Update.ScriptRunBehaviourUpdate",
+        "ms": 41.270801544189453
+      },
+      {
+        "name": "BehaviourUpdate",
+        "ms": 41.269500732421875
+      },
+      {
+        "name": "FontEngine.Get_GPOS_Table",
+        "ms": 39.577098846435547
+      }
+    ]
+  },
+  {
+    "frame": 186,
+    "ms": 54.2169,
+    "thread": "Main Thread",
+    "samples": [
+      {
+        "name": "Main Thread",
+        "ms": 54.216899871826172
+      },
+      {
+        "name": "PlayerLoop",
+        "ms": 54.181800842285156
+      },
+      {
+        "name": "TimeUpdate.WaitForLastPresentationAndUpdateTime",
+        "ms": 51.864101409912109
+      },
+      {
+        "name": "GarbageCollector.CollectIncremental",
+        "ms": 51.846500396728516
+      },
+      {
+        "name": "PostLateUpdate.FinishFrameRendering",
+        "ms": 1.8651000261306763
+      },
+      {
+        "name": "UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke]",
+        "ms": 1.8092000484466553
+      },
+      {
+        "name": "Inl_UniversalRenderTotal",
+        "ms": 1.7989000082015991
+      },
+      {
+        "name": "Inl_RenderCameraStack",
+        "ms": 1.7826999425888062
+      },
+      {
+        "name": "Inl_UniversalRenderPipeline.RenderSingleCameraInternal: LADİR Camera",
+        "ms": 1.0879999399185181
+      },
+      {
+        "name": "Inl_RecordRenderGraph",
+        "ms": 0.61379998922348022
+      },
+      {
+        "name": "Inl_On Record Render Graph",
+        "ms": 0.60890001058578491
+      },
+      {
+        "name": "Inl_ScriptableRenderContext.Submit",
+        "ms": 0.608299970626831
+      },
+      {
+        "name": "UniversalRenderPipeline.RenderSingleCameraInternal: LADİR Camera",
+        "ms": 0.55849999189376831
+      },
+      {
+        "name": "ExecuteRenderGraph",
+        "ms": 0.53339999914169312
+      },
+      {
+        "name": "DrawScreenSpaceUI",
+        "ms": 0.26039999723434448
+      },
+      {
+        "name": "UIEvents.IMGUIRenderOverlays",
+        "ms": 0.257099986076355
+      },
+      {
+        "name": "GUI.Repaint",
+        "ms": 0.25630000233650208
+      }
+    ]
+  },
+  {
+    "frame": 189,
+    "ms": 47.2139,
+    "thread": "Main Thread",
+    "samples": [
+      {
+        "name": "Main Thread",
+        "ms": 47.213901519775391
+      },
+      {
+        "name": "PlayerLoop",
+        "ms": 3.4647998809814453
+      },
+      {
+        "name": "PostLateUpdate.FinishFrameRendering",
+        "ms": 2.6861000061035156
+      },
+      {
+        "name": "UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke]",
+        "ms": 2.5924999713897705
+      },
+      {
+        "name": "Inl_UniversalRenderTotal",
+        "ms": 2.576200008392334
+      },
+      {
+        "name": "Inl_RenderCameraStack",
+        "ms": 2.5474998950958252
+      },
+      {
+        "name": "Inl_ScriptableRenderContext.Submit",
+        "ms": 1.2734999656677246
+      },
+      {
+        "name": "Inl_UniversalRenderPipeline.RenderSingleCameraInternal: LADİR Camera",
+        "ms": 1.1540999412536621
+      },
+      {
+        "name": "UniversalRenderPipeline.RenderSingleCameraInternal: LADİR Camera",
+        "ms": 1.1411999464035034
+      },
+      {
+        "name": "ExecuteRenderGraph",
+        "ms": 1.115399956703186
+      },
+      {
+        "name": "Inl_ExecuteRenderGraph",
+        "ms": 0.39219999313354492
+      },
+      {
+        "name": "Draw Main Light Shadowmap",
+        "ms": 0.37709999084472656
+      },
+      {
+        "name": "MainLightShadow",
+        "ms": 0.37430000305175781
+      },
+      {
+        "name": "Inl_RecordRenderGraph",
+        "ms": 0.32659998536109924
+      },
+      {
+        "name": "Inl_On Record Render Graph",
+        "ms": 0.31850001215934753
+      },
+      {
+        "name": "DrawScreenSpaceUI",
+        "ms": 0.25349998474121094
+      },
+      {
+        "name": "UIEvents.IMGUIRenderOverlays",
+        "ms": 0.2484000027179718
+      },
+      {
+        "name": "GUI.Repaint",
+        "ms": 0.2468000054359436
+      },
+      {
+        "name": "DrawScreenSpaceUI",
+        "ms": 0.2370000034570694
+      },
+      {
+        "name": "UIEvents.CanvasManagerRenderOverlays",
+        "ms": 0.23420000076293945
+      },
+      {
+        "name": "UI.RenderOverlays",
+        "ms": 0.23340000212192535
+      },
+      {
+        "name": "UnityEngine.UIModule.dll!UnityEngine::Canvas.EndRenderExtraOverlays() [Invoke]",
+        "ms": 0.22249999642372131
+      },
+      {
+        "name": "Shadows.ExecuteDrawShadows",
+        "ms": 0.21240000426769257
+      }
+    ]
+  },
+  {
+    "frame": 247,
+    "ms": 58.3811,
+    "thread": "Main Thread",
+    "samples": [
+      {
+        "name": "Main Thread",
+        "ms": 58.381099700927734
+      },
+      {
+        "name": "PlayerLoop",
+        "ms": 16.061199188232422
+      },
+      {
+        "name": "PostLateUpdate.FinishFrameRendering",
+        "ms": 15.360099792480469
+      },
+      {
+        "name": "UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke]",
+        "ms": 15.182299613952637
+      },
+      {
+        "name": "Inl_UniversalRenderTotal",
+        "ms": 15.165499687194824
+      },
+      {
+        "name": "Inl_RenderCameraStack",
+        "ms": 15.138099670410156
+      },
+      {
+        "name": "Inl_UniversalRenderPipeline.RenderSingleCameraInternal: LADİR Camera",
+        "ms": 12.238200187683105
+      },
+      {
+        "name": "Inl_RecordRenderGraph",
+        "ms": 11.515299797058105
+      },
+      {
+        "name": "Inl_On Record Render Graph",
+        "ms": 11.505900382995605
+      },
+      {
+        "name": "Inl_ScriptableRenderContext.Submit",
+        "ms": 2.7734000682830811
+      },
+      {
+        "name": "UniversalRenderPipeline.RenderSingleCameraInternal: LADİR Camera",
+        "ms": 2.5908000469207764
+      },
+      {
+        "name": "ExecuteRenderGraph",
+        "ms": 2.5506999492645264
+      },
+      {
+        "name": "DrawScreenSpaceUI",
+        "ms": 2.1847999095916748
+      },
+      {
+        "name": "UIEvents.IMGUIRenderOverlays",
+        "ms": 2.1781001091003418
+      },
+      {
+        "name": "GUI.Repaint",
+        "ms": 2.176800012588501
+      },
+      {
+        "name": "Inl_ExecuteRenderGraph",
+        "ms": 0.35089999437332153
+      }
+    ]
+  },
+  {
+    "frame": 259,
+    "ms": 62.2231,
+    "thread": "Main Thread",
+    "samples": [
+      {
+        "name": "Main Thread",
+        "ms": 62.223098754882813
+      },
+      {
+        "name": "PlayerLoop",
+        "ms": 62.198200225830078
+      },
+      {
+        "name": "PostLateUpdate.FinishFrameRendering",
+        "ms": 61.5286979675293
+      },
+      {
+        "name": "UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke]",
+        "ms": 61.429100036621094
+      },
+      {
+        "name": "Inl_UniversalRenderTotal",
+        "ms": 61.414901733398438
+      },
+      {
+        "name": "Inl_RenderCameraStack",
+        "ms": 61.391399383544922
+      },
+      {
+        "name": "Inl_UniversalRenderPipeline.RenderSingleCameraInternal: LADİR Camera",
+        "ms": 58.869400024414063
+      },
+      {
+        "name": "Inl_ExecuteRenderGraph",
+        "ms": 58.050300598144531
+      },
+      {
+        "name": "Inl_Setup Forward Lights",
+        "ms": 56.604598999023438
+      },
+      {
+        "name": "Inl_Setup Light Constants",
+        "ms": 56.602001190185547
+      },
+      {
+        "name": "Inl_ScriptableRenderContext.Submit",
+        "ms": 2.402400016784668
+      },
+      {
+        "name": "UniversalRenderPipeline.RenderSingleCameraInternal: LADİR Camera",
+        "ms": 2.2253000736236572
+      },
+      {
+        "name": "ExecuteRenderGraph",
+        "ms": 2.1993999481201172
+      },
+      {
+        "name": "DrawScreenSpaceUI",
+        "ms": 0.97890001535415649
+      },
+      {
+        "name": "UIEvents.IMGUIRenderOverlays",
+        "ms": 0.97320002317428589
+      },
+      {
+        "name": "GUI.Repaint",
+        "ms": 0.972100019454956
+      },
+      {
+        "name": "Inl_Draw Main Light Shadowmap",
+        "ms": 0.56169998645782471
+      },
+      {
+        "name": "Inl_MainLightShadow",
+        "ms": 0.55290001630783081
+      },
+      {
+        "name": "Inl_RecordRenderGraph",
+        "ms": 0.4659000039100647
+      },
+      {
+        "name": "Inl_On Record Render Graph",
+        "ms": 0.45679998397827148
+      },
+      {
+        "name": "Inl_NRPRGComp_ExecuteInitializeResources",
+        "ms": 0.30570000410079956
+      },
+      {
+        "name": "Draw Main Light Shadowmap",
+        "ms": 0.2386000007390976
+      },
+      {
+        "name": "MainLightShadow",
+        "ms": 0.23639999330043793
+      }
+    ]
+  },
+  {
+    "frame": 341,
+    "ms": 386.6858,
+    "thread": "Main Thread",
+    "samples": [
+      {
+        "name": "Main Thread",
+        "ms": 386.685791015625
+      },
+      {
+        "name": "PlayerLoop",
+        "ms": 386.62469482421875
+      },
+      {
+        "name": "Update.ScriptRunDelayedTasks",
+        "ms": 203.19929504394531
+      },
+      {
+        "name": "UnityEngine.CoreModule.dll!UnityEngine::UnitySynchronizationContext.ExecuteTasks() [Invoke]",
+        "ms": 203.19729614257813
+      },
+      {
+        "name": "PostLateUpdate.UIElementsRepaintPanels",
+        "ms": 173.73410034179688
+      },
+      {
+        "name": "UnityEngine.UIElementsModule.dll!UnityEngine.UIElements::UIElementsRuntimeUtilityNative.RepaintPanels() [Invoke]",
+        "ms": 173.7318115234375
+      },
+      {
+        "name": "UIElementsRuntimeUtility.DoDispatch(Repaint Event)",
+        "ms": 173.71479797363281
+      },
+      {
+        "name": "Panel.Update.Panel",
+        "ms": 173.71359252929688
+      },
+      {
+        "name": "Update Rendering",
+        "ms": 173.70460510253906
+      },
+      {
+        "name": "FontEngine.GetPairAdjustmentRecords",
+        "ms": 153.40480041503906
+      },
+      {
+        "name": "FontEngine.GetOpenTypeFontFeatures",
+        "ms": 153.40129089355469
+      },
+      {
+        "name": "FontEngine.GetOpenTypeLayoutTables",
+        "ms": 104.44899749755859
+      },
+      {
+        "name": "FontEngine.Get_GPOS_Table",
+        "ms": 87.838798522949219
+      },
+      {
+        "name": "FontEngine.Get_GPOS_Lookups",
+        "ms": 87.827400207519531
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 18.148000717163086
+      },
+      {
+        "name": "FontEngine.Get_GSUB_Table",
+        "ms": 16.608499526977539
+      },
+      {
+        "name": "FontEngine.Get_GSUB_Lookups",
+        "ms": 16.563299179077148
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 15.77340030670166
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 12.80720043182373
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 7.8671998977661133
+      },
+      {
+        "name": "PreLateUpdate.UIElementsUpdatePanels",
+        "ms": 6.6424999237060547
+      },
+      {
+        "name": "UnityEngine.UIElementsModule.dll!UnityEngine.UIElements::UIElementsRuntimeUtilityNative.UpdatePanels() [Invoke]",
+        "ms": 6.6403999328613281
+      },
+      {
+        "name": "Update Layout",
+        "ms": 5.7444000244140625
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 4.8459000587463379
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 4.843900203704834
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 4.78439998626709
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 4.2227997779846191
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 4.0981001853942871
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 3.8763000965118408
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 3.5339999198913574
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 3.4263999462127686
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 3.3415999412536621
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 3.2678999900817871
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 3.2355999946594238
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 2.6738998889923096
+      },
+      {
+        "name": "InvokeMeasureFunction",
+        "ms": 2.5913999080657959
+      },
+      {
+        "name": "FontAsset.TryAddCharacter",
+        "ms": 2.5399000644683838
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 2.3917000293731689
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 2.2154998779296875
+      },
+      {
+        "name": "PostLateUpdate.FinishFrameRendering",
+        "ms": 2.1438000202178955
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 2.1289000511169434
+      },
+      {
+        "name": "UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke]",
+        "ms": 2.0625
+      },
+      {
+        "name": "Inl_UniversalRenderTotal",
+        "ms": 2.0455000400543213
+      },
+      {
+        "name": "Inl_RenderCameraStack",
+        "ms": 2.0171000957489014
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 1.9852999448776245
+      }
+    ]
+  },
+  {
+    "frame": 342,
+    "ms": 235.5975,
+    "thread": "Main Thread",
+    "samples": [
+      {
+        "name": "Main Thread",
+        "ms": 235.59750366210938
+      },
+      {
+        "name": "PlayerLoop",
+        "ms": 235.57341003417969
+      },
+      {
+        "name": "Update.ScriptRunBehaviourUpdate",
+        "ms": 223.02400207519531
+      },
+      {
+        "name": "BehaviourUpdate",
+        "ms": 223.023193359375
+      },
+      {
+        "name": "Ladir.Planet.dll!Ladir.Planet::PlanetTerrain.Update() [Invoke]",
+        "ms": 88.800201416015625
+      },
+      {
+        "name": "Ladir.Planet.dll!Ladir.Planet::PlanetClouds.Update() [Invoke]",
+        "ms": 48.727500915527344
+      },
+      {
+        "name": "Ladir.Planet.dll!Ladir.Planet::PlanetHydrologyOverlay.Update() [Invoke]",
+        "ms": 32.855300903320313
+      },
+      {
+        "name": "Ladir.Planet.dll!Ladir.Planet::PlanetOcean.Update() [Invoke]",
+        "ms": 32.395401000976563
+      },
+      {
+        "name": "Ladir.Planet.dll!Ladir.Planet::PlanetStudio.Update() [Invoke]",
+        "ms": 20.151300430297852
+      },
+      {
+        "name": "PreLateUpdate.UIElementsUpdatePanels",
+        "ms": 5.70389986038208
+      },
+      {
+        "name": "UnityEngine.UIElementsModule.dll!UnityEngine.UIElements::UIElementsRuntimeUtilityNative.UpdatePanels() [Invoke]",
+        "ms": 5.7013001441955566
+      },
+      {
+        "name": "Update Layout",
+        "ms": 5.5689001083374023
+      },
+      {
+        "name": "PostLateUpdate.UIElementsRepaintPanels",
+        "ms": 4.0311999320983887
+      },
+      {
+        "name": "UnityEngine.UIElementsModule.dll!UnityEngine.UIElements::UIElementsRuntimeUtilityNative.RepaintPanels() [Invoke]",
+        "ms": 4.0286002159118652
+      },
+      {
+        "name": "UIElementsRuntimeUtility.DoDispatch(Repaint Event)",
+        "ms": 4.01170015335083
+      },
+      {
+        "name": "Panel.Update.Panel",
+        "ms": 4.010200023651123
+      },
+      {
+        "name": "Update Rendering",
+        "ms": 4.00029993057251
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 3.5806000232696533
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 3.2844998836517334
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 3.1914999485015869
+      },
+      {
+        "name": "InvokeMeasureFunction",
+        "ms": 3.1299998760223389
+      },
+      {
+        "name": "CopyChannels",
+        "ms": 2.9077999591827393
+      },
+      {
+        "name": "JobHandle.Complete",
+        "ms": 2.1389999389648438
+      },
+      {
+        "name": "WaitForJobGroupID",
+        "ms": 2.1310999393463135
+      },
+      {
+        "name": "PostLateUpdate.FinishFrameRendering",
+        "ms": 1.992400050163269
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 1.9121999740600586
+      },
+      {
+        "name": "UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke]",
+        "ms": 1.8919999599456787
+      },
+      {
+        "name": "Inl_UniversalRenderTotal",
+        "ms": 1.8768999576568604
+      },
+      {
+        "name": "Inl_RenderCameraStack",
+        "ms": 1.8524999618530273
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 1.8515000343322754
+      },
+      {
+        "name": "FontAsset.TryAddCharacter",
+        "ms": 1.8042000532150269
+      },
+      {
+        "name": "Idle",
+        "ms": 1.8005000352859497
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 1.7070000171661377
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 1.6819000244140625
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 1.6162999868392944
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 1.4157999753952026
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 1.3219000101089478
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 1.1750999689102173
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 1.1388000249862671
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 1.1211999654769897
+      },
+      {
+        "name": "WaitForJobGroupID",
+        "ms": 1.1100000143051147
+      },
+      {
+        "name": "EngineJob",
+        "ms": 1.0743999481201172
+      },
+      {
+        "name": "EngineJob",
+        "ms": 1.0437999963760376
+      },
+      {
+        "name": "FontEngine.GlyphRasterizer.Calculate3x3AAEDT",
+        "ms": 1.0434999465942383
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 0.99559998512268066
+      }
+    ]
+  },
+  {
+    "frame": 343,
+    "ms": 348.36142,
+    "thread": "Main Thread",
+    "samples": [
+      {
+        "name": "Main Thread",
+        "ms": 348.36141967773438
+      },
+      {
+        "name": "PlayerLoop",
+        "ms": 348.33148193359375
+      },
+      {
+        "name": "TimeUpdate.WaitForLastPresentationAndUpdateTime",
+        "ms": 308.41342163085938
+      },
+      {
+        "name": "GfxDeviceD3D11.WaitForLastPresent",
+        "ms": 308.40631103515625
+      },
+      {
+        "name": "DXGI.WaitOnSwapChain",
+        "ms": 308.40130615234375
+      },
+      {
+        "name": "Update.ScriptRunBehaviourUpdate",
+        "ms": 36.2150993347168
+      },
+      {
+        "name": "BehaviourUpdate",
+        "ms": 36.2140998840332
+      },
+      {
+        "name": "Ladir.Planet.dll!Ladir.Planet::PlanetTerrain.Update() [Invoke]",
+        "ms": 35.479099273681641
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 27.029600143432617
+      },
+      {
+        "name": "PostLateUpdate.FinishFrameRendering",
+        "ms": 2.7105000019073486
+      },
+      {
+        "name": "UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke]",
+        "ms": 2.6256000995635986
+      },
+      {
+        "name": "Inl_UniversalRenderTotal",
+        "ms": 2.609299898147583
+      },
+      {
+        "name": "Inl_RenderCameraStack",
+        "ms": 2.5850999355316162
+      },
+      {
+        "name": "Inl_UniversalRenderPipeline.RenderSingleCameraInternal: LADİR Camera",
+        "ms": 1.5217000246047974
+      },
+      {
+        "name": "Inl_ScriptableRenderContext.Submit",
+        "ms": 0.930400013923645
+      },
+      {
+        "name": "UniversalRenderPipeline.RenderSingleCameraInternal: LADİR Camera",
+        "ms": 0.84289997816085815
+      },
+      {
+        "name": "ExecuteRenderGraph",
+        "ms": 0.81260001659393311
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 0.67640000581741333
+      },
+      {
+        "name": "Inl_RecordRenderGraph",
+        "ms": 0.65710002183914185
+      },
+      {
+        "name": "Inl_On Record Render Graph",
+        "ms": 0.6492999792098999
+      },
+      {
+        "name": "Ladir.Planet.dll!Ladir.Planet::PlanetStudio.Update() [Invoke]",
+        "ms": 0.59229999780654907
+      },
+      {
+        "name": "Inl_ExecuteRenderGraph",
+        "ms": 0.40849998593330383
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 0.32220000028610229
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 0.31290000677108765
+      },
+      {
+        "name": "PreLateUpdate.UIElementsUpdatePanels",
+        "ms": 0.30149999260902405
+      },
+      {
+        "name": "UnityEngine.UIElementsModule.dll!UnityEngine.UIElements::UIElementsRuntimeUtilityNative.UpdatePanels() [Invoke]",
+        "ms": 0.2994999885559082
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 0.2888999879360199
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 0.2888999879360199
+      },
+      {
+        "name": "DrawScreenSpaceUI",
+        "ms": 0.27790001034736633
+      },
+      {
+        "name": "UIEvents.IMGUIRenderOverlays",
+        "ms": 0.26969999074935913
+      },
+      {
+        "name": "GUI.Repaint",
+        "ms": 0.26879999041557312
+      },
+      {
+        "name": "Update Layout",
+        "ms": 0.26780000329017639
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 0.26060000061988831
+      },
+      {
+        "name": "Mono.JIT",
+        "ms": 0.22699999809265137
+      }
+    ]
+  }
+]

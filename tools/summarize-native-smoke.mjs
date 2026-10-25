@@ -1,0 +1,13 @@
+import {readFile,writeFile} from 'node:fs/promises';
+import {resolve,dirname} from 'node:path';
+const input=resolve(process.argv[2]??'evidence/planet-port/native-player-final/smoke.json');
+const r=JSON.parse(await readFile(input,'utf8'));
+const quantile=(values,q)=>{const a=values.filter(Number.isFinite).sort((a,b)=>a-b);return a.length?a[Math.min(a.length-1,Math.floor(a.length*q))]:null;};
+const validGpu=r.samples.map(s=>s.gpuMs).filter(v=>v>0);
+if(!r.loaded||r.frames<100||validGpu.length<10||r.errors.length)throw Error('Not an accepted rendered run; inspect the report and images.');
+const fields=['frameMs','gpuMs','cpuMs','planMs','submitMs','stitchMs','uploadMs','simulationMs'];
+const metrics=Object.fromEntries(fields.map(key=>{const a=r.samples.map(s=>s[key]).filter(v=>Number.isFinite(v)&&(key!=='gpuMs'||v>0));return [key,{median:quantile(a,.5),p95:quantile(a,.95),p99:quantile(a,.99),max:quantile(a,1)}];}));
+const result={worldFileSha256:r.worldFileSha256,diameterKm:r.diameterKm,graphics:r.graphics,graphicsApi:r.graphicsApi,resolution:r.resolution,frames:r.frames,observedMeanFps:1000/metrics.frameMs.median,meanFps:r.frames/(r.samples.reduce((sum,s)=>sum+s.frameMs,0)/1000),longFrames50ms:r.longFrames50ms,metrics,fftMaxErrorMeters:r.fftMaxErrorMeters,seamVertices:r.seamVertices,maxSeamGapMeters:r.maxSeamGapMeters,meshPayloadMiB:r.meshMiB,residentPayloadEstimateMiB:r.residentMiB,unityAllocatedMiB:r.totalAllocatedMiB,scenarios:r.scenarios,errors:r.errors,notes:['cpuFrameTime includes pipeline waits; do not add it to GPU time.','Memory values are end snapshots, not peaks or driver VRAM.','Screenshots must also be inspected; timings do not validate visual fidelity.','Five-flight-stage timings are different workloads, not a speedup comparison.']};
+delete result.observedMeanFps;
+await writeFile(resolve(dirname(input),'summary.json'),JSON.stringify(result,null,2)+'\n');
+console.log(JSON.stringify({passed:true,frames:r.frames,meanFps:result.meanFps,longFrames50ms:r.longFrames50ms,metrics}));
