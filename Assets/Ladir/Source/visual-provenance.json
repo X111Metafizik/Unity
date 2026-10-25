@@ -1,0 +1,18 @@
+{
+  "sourceCommit": "34841d6abc1c1c12251c2ace18ffb853895db16f",
+  "sourceFiles": [
+    "render/vegetation.mjs",
+    "render/volume-data.mjs"
+  ],
+  "files": {
+    "Vegetation.bytes": {
+      "bytes": 129396,
+      "sha256": "6c5d4dadaf30294e842a14fe72414bdc701a1d0068244a3924e115f6dcfe41b7"
+    },
+    "VolumeNoise.bytes": {
+      "bytes": 1048576,
+      "sha256": "bfc69d41e81b464a1223cb7ad26b0a1baa489dede8f38b1870f97d07b988d174"
+    }
+  },
+  "notes": "Original geometries and colors. X reflection / reversed winding at the Unity boundary. 64 cubed RGBA volume field is unchanged."
+}

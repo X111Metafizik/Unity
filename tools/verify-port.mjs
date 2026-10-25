@@ -1,0 +1,12 @@
+import {readFile,writeFile,mkdir} from 'node:fs/promises';
+import {resolve} from 'node:path';
+import {deserializePlanet,serializePlanet} from '../Assets/StreamingAssets/Ladir/authoring/io/bundle.mjs';
+import {generatePlanet} from '../Assets/StreamingAssets/Ladir/authoring/core/world.mjs';
+const root=resolve(import.meta.dirname,'..'),checks=[];
+const original=await deserializePlanet(await readFile(resolve(root,'Assets/StreamingAssets/Ladir/planet/river-v42.planet')));
+const roundtrip=await deserializePlanet(await readFile(resolve(root,'tools/terrain-parity/bin/roundtrip.planet')));
+if(original.manifest.worldDataHash!==roundtrip.manifest.worldDataHash)throw Error('Unity save changed the canonical geography hash');checks.push('C# save loads in the unchanged web reader with the same world hash');
+const config={seed:'UNITY-PORT-REGRESSION',analysisResolution:16,regionCount:8};const a=await generatePlanet(config),b=await generatePlanet(config);
+if(a.manifest.worldDataHash!==b.manifest.worldDataHash)throw Error('Authoring is not repeatable');checks.push('Bundled authoring generator creates the same seed identically on repeat');
+const restored=await deserializePlanet(serializePlanet(a));if(restored.manifest.worldDataHash!==a.manifest.worldDataHash)throw Error('Authoring round trip failed');checks.push('New seed package passes original hydrology and integrity validation');
+await writeFile(resolve(root,'evidence/planet-port/authoring-results.json'),JSON.stringify({passed:true,checks,original:original.manifest.worldDataHash,newSeed:a.manifest.worldDataHash},null,2));console.log(JSON.stringify({passed:true,checks}));

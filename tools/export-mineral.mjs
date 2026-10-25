@@ -1,0 +1,2 @@
+import {resolve} from 'node:path';import {pathToFileURL} from 'node:url';import {writeFile} from 'node:fs/promises';
+const source=resolve(process.argv[2]);const {rockTexture}=await import(pathToFileURL(resolve(source,'render/rock-texture.mjs')));const t=rockTexture();await writeFile(new URL('../Assets/Ladir/Source/Mineral.bytes',import.meta.url),t.image.data);console.log(`${t.image.width}x${t.image.height} original packed mineral texture exported.`);

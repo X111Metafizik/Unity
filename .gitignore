@@ -4,6 +4,10 @@
 /obj/
 /UserSettings/
 /Builds/
+tools/terrain-parity/bin/
+tools/terrain-parity/obj/
+tools/compile-unity/bin/
+tools/compile-unity/obj/
 /.vs/
 /.idea/
 /*.csproj
@@ -15,5 +19,7 @@
 /Assets/Resources.meta
 /evidence/unity-v1/*.log
 /evidence/unity-v1/run1/
+/evidence/planet-port/*.log
+/evidence/planet-port/editor/
 .DS_Store
 Thumbs.db

@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+ <PropertyGroup><TargetFramework>net9.0</TargetFramework><LangVersion>9.0</LangVersion><EnableDefaultCompileItems>false</EnableDefaultCompileItems><Nullable>disable</Nullable><DefineConstants>UNITY_STANDALONE_WIN;UNITY_6000_0_OR_NEWER</DefineConstants><NoWarn>1701;1702</NoWarn></PropertyGroup>
+ <PropertyGroup Condition="'$(CheckEditor)'=='true'"><DefineConstants>$(DefineConstants);UNITY_EDITOR</DefineConstants></PropertyGroup>
+ <ItemGroup>
+  <Compile Include="../../Assets/Ladir/Planet/**/*.cs" />
+  <Compile Include="../../Assets/Ladir/Editor/PlanetSetup.cs;../../Assets/Ladir/Editor/PlanetPortEditorQA.cs;../../Assets/Ladir/Editor/PrototypeSetup.cs" Condition="'$(CheckEditor)'=='true'" />
+  <Reference Include="$(UnityManaged)/UnityEngine/*.dll"><Private>false</Private></Reference>
+  <Reference Include="$(UnityManaged)/UnityEditor/*.dll" Condition="'$(CheckEditor)'=='true'"><Private>false</Private></Reference>
+  <Reference Include="$(UnityScripts)/*.dll" Exclude="$(UnityScripts)/Ladir.Planet.dll;$(UnityScripts)/Ladir.Editor.dll"><Private>false</Private></Reference>
+  <Reference Include="Newtonsoft.Json"><HintPath>$(NewtonsoftPath)</HintPath><Private>false</Private></Reference>
+ </ItemGroup>
+</Project>
