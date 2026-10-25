@@ -1,0 +1,12 @@
+{
+  "name": "ladir-unity-tools",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Optional verification and export tools for the LADIR Unity prototype",
+  "engines": { "node": ">=24" },
+  "scripts": {
+    "test": "node --test --test-isolation=none tests/*.test.mjs",
+    "export:region": "node tools/export-from-web.mjs"
+  }
+}

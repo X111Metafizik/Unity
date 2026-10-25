@@ -1,0 +1,23 @@
+{
+    "passed": true,
+    "tiles": 256,
+    "edgeSamples": 123360,
+    "gridContracts": 484,
+    "waterVertices": 6534,
+    "radiusMeters": 4000000.0,
+    "diameterKm": 8000.0,
+    "modelLengthMeters": 110.0,
+    "worldHash": "b7aefd351cef8c3f6e23e5878c5369987fa41d29e28a4fe9297c891ad09efada",
+    "editor": "6000.0.80f1",
+    "checks": [
+        "All 256 tile hashes and headers",
+        "123360 shared height and water border samples",
+        "Overview/fine canonical sample identity",
+        "All four finer resolutions against coarse stitched edge",
+        "Burst terrain and water jobs execute",
+        "Finite clipped lake geometry",
+        "Corrupt checksum rejected",
+        "700/1800 km/h conversion",
+        "110 m model scale"
+    ]
+}

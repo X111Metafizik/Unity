@@ -1,0 +1,5 @@
+{
+  "name": "Ladir.Runtime",
+  "references": ["Unity.Burst", "Unity.Collections", "Unity.Mathematics", "Unity.InputSystem", "Unity.RenderPipelines.Core.Runtime", "Unity.RenderPipelines.Universal.Runtime"],
+  "allowUnsafeCode": true
+}

@@ -1,0 +1,18 @@
+{
+    "passed": true,
+    "message": "Input and surface smoke checks passed",
+    "completedStages": 7,
+    "health": 100.0,
+    "altitude": 2225.8447265625,
+    "speedKmh": 700.0,
+    "checks": [
+        "Space reaches 1800 km/h",
+        "Release returns to 700 km/h",
+        "C lands on the displayed terrain",
+        "C takes off",
+        "Downward impact damages ship without tunnelling",
+        "2 repairs hull",
+        "Ctrl/right mouse orbits camera",
+        "Escape freezes movement"
+    ]
+}
