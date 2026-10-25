@@ -33,7 +33,12 @@ Shader "Ladir/Clouds" {
   bool valid=_LadirHistoryControl.x>.5&&clip.w>0&&all(uv>0)&&all(uv<1);float2 old=0;
   if(valid){old=SAMPLE_TEXTURE2D_LOD(_LadirHistoryMeta,sampler_LadirHistoryMeta,uv,0).rg;float expected=min(60000,length(ray*min(distance,60000)+_LadirCameraDelta));valid=abs(old.x-expected)<=max(.002,expected*.015)&&old.y<4;}
   int2 tile=(int2)i.positionCS.xy/8;bool selected=(tile.x+tile.y*2)%5==(int)_LadirHistoryControl.y;bool reuse=valid&&!selected;
-  Output o;o.color=reuse?SAMPLE_TEXTURE2D_LOD(_LadirHistory,sampler_LadirHistory,uv,0):LadirVolume(ro,ray,distance);o.metadata=float2(min(distance,60000),reuse?old.y+1:0);return o;
+  // Keep the expensive raymarch outside a conditional select: a flattened
+  // ternary can execute BOTH operands even for a valid history pixel. The 8x8
+  // phase blocks above keep neighbouring lanes on the same branch.
+  Output o;
+  [branch] if(reuse){o.color=SAMPLE_TEXTURE2D_LOD(_LadirHistory,sampler_LadirHistory,uv,0);o.metadata=float2(min(distance,60000),old.y+1);return o;}
+  o.color=LadirVolume(ro,ray,distance);o.metadata=float2(min(distance,60000),0);return o;
  }
  ENDHLSL }
  Pass {Name "Depth-aware composite" ZWrite Off ZTest Always Cull Off

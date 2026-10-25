@@ -1,0 +1,25 @@
+{
+  "baselineCommit": "767d4f4ca560b2cb973aeef4225a95169201cffe",
+  "unity": "6000.0.80f1",
+  "backend": "IL2CPP",
+  "graphics": "NVIDIA GeForce GTX 1660 Ti",
+  "api": "Direct3D11",
+  "width": 1920,
+  "height": 1080,
+  "renderScale": 1,
+  "msaa": 4,
+  "flightDelayAfterKernelSeconds": 10,
+  "routeSimulationSeconds": 64,
+  "runtimeBytes": 221174528.0,
+  "binarySha256": "41030c0c6fd416b790f3a64d007f23b48196355cd52c770da9b4c005eb2859e4",
+  "sources": {
+    "Assets/Ladir/Planet/PlanetMeshData.cs": "e6cd78236f707564b8832d2fbda17a430c81a5ca4e069471ecdfddc87da45fa4",
+    "Assets/Ladir/Planet/PlanetPerformanceRun.cs": "48aabb542dc780a0c617cf14ae536df72d577628191bd104629cbd03cd229f21",
+    "Assets/Ladir/Shaders/Clouds.shader": "5f35a5edbed61b86b25aef0bda9d17b9d11097972905ac4bc8122eee3ab71042",
+    "Assets/Ladir/Planet/PlanetTerrain.cs": "314e0ef4da35cd2c8d47744e5e901f4563332c2735ce290a99f9bf74e7bf4814",
+    "Assets/Ladir/Planet/Kernel/PlanetWorld.cs": "4f82c01fd98e29caa5fd421609ed2f1bce7b8593074ed294065e1d93325afb1c",
+    "Assets/Ladir/Planet/PlanetStudio.cs": "b1b6c0c9d55334d72611eff4fcafd35681150549fc0d73bf4f982fbb6c50d5e7",
+    "Assets/Ladir/Planet/PlanetNativeParity.cs": "ecafc63a86d0f451ba41596e1a8adb878b8864261dc6f96979e7eab183af522f",
+    "Assets/Ladir/Planet/PlanetVegetation.cs": "bf1013f9b8667c82572a114e5b2434ac50e586b3db5b243ff7c610fa1853d7e3"
+  }
+}

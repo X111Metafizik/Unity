@@ -2,7 +2,7 @@
 
 Unity **6000.0.80f1 / URP 17** source port of the [LADİR browser project](https://github.com/X111Metafizik/ladir), based on web commit `34841d6abc1c1c12251c2ace18ffb853895db16f`.
 
-**Status: the global scene builds and runs as a Windows player.** Terrain, flight, native UI, atmosphere, FFT water and warp have rendered evidence. This is still a draft migration: pixel-identical rendering, continuous LOD morphing and the shared GPU displacement/global bake path are not complete. See [native validation and remaining work](docs/NATIVE_VALIDATION.md). The old finite prototype's FPS is not used for this scene.
+**Status: the global scene builds and runs as a Windows player.** Terrain, flight, native UI, atmosphere, FFT water and warp have rendered evidence. This is still a draft migration: pixel-identical rendering, continuous LOD morphing and the shared GPU displacement/global bake path are not complete. See the [startup and flight stutter investigation](docs/PERFORMANCE_STUTTER_FIX.md) and [earlier native validation](docs/NATIVE_VALIDATION.md). The old finite prototype's FPS is not used for this scene.
 
 ## Open the new scene
 
@@ -50,7 +50,7 @@ The committed [evidence](evidence/planet-port) records:
 | --- | --- |
 | Terrain, six world types, shared faces and hydrology | 2,118 cases, zero failures; maximum height difference 6.96e-11 m |
 | Original tree placement | 8 tiles / 2,439 trees match; maximum root difference 3.26e-10 m |
-| Flight, landing, takeoff, warp, repair, land/water navigation and package checks | 1,534 assertions passed (includes time-series samples) |
+| Flight, landing, takeoff, warp, repair, land/water navigation and package checks | 1,564 assertions passed (includes time-series samples and lossless typed-header loading) |
 | Reference drainage analysis | 1,089 nodes match original flow receivers and basins |
 | Ocean spectrum against direct DFT | 216 samples; maximum wave difference 2.40e-7 m |
 | Native GPU ocean / mixed LOD seams | Measured in the rendered smoke report; thresholds 1e-4 m / 0.1 m |
@@ -76,7 +76,18 @@ Unity.exe -batchmode -nographics -projectPath "C:/Projects/Unity" -executeMethod
 Builds/Planet/Ladir.exe --planet-smoke "C:/Projects/planet-smoke" --extended -screen-width 1440 -screen-height 1000 -screen-fullscreen 0
 ```
 
-Run the player visibly. A hidden/minimized window can skip rendering and produce meaningless frame rates; the rejected hidden run is excluded from the evidence. For normal play, launch `Builds/Planet/Ladir.exe` with no arguments, or use `BASLAT-UNITY.cmd` after building.
+Run the player visibly. A hidden/minimized window can skip rendering and produce meaningless frame rates; the rejected hidden run is excluded from the evidence. For normal play, use `BASLAT-UNITY.cmd` after building; it prefers the tested `Builds/PlanetAOT` player when present, otherwise `Builds/Planet`. Rebuild the AOT player after source changes if you continue using that launcher. Launch either executable directly to choose a specific backend.
+
+For the reproducible startup/flight capture, close other game instances and keep the editor out of Play mode:
+
+```text
+Builds/Planet/Ladir.exe --performance-run C:/Tests/ladir-performance -screen-width 1920 -screen-height 1080 -screen-fullscreen 0
+node tools/summarize-performance.mjs C:/Tests/ladir-performance
+```
+
+This opt-in probe includes startup and 64 seconds of physics-step-driven flight: entry, cruise, boost/combat, release, turn, descent and recovery. The final surface check compares the reordered GPU vertex/index streams with the displayed CPU surface. Raw frame JSON is also saved as `frames.json.gz`; the summary tool can read either form. GPU, CPU, frame interval and waits are separate fields, not additive totals. The release build cannot provide Unity's frame-allocation recorder; IL2CPP also lacks the thread-allocation API in this Unity version, so unavailable allocation counters are reported explicitly.
+
+**LADIR → Diagnostics → Build IL2CPP player** builds a separate `Builds/PlanetAOT` player using the installed Windows IL2CPP module and Visual Studio C++ toolchain. It restores the previous editor backend afterwards. The normal Mono build remains available for comparison. **Build development player** plus `--startup-profile C:/Tests/ladir-profile` captures a binary Unity profile; profiling runs are diagnostic and are excluded from release performance comparisons.
 
 ## Existing reference prototype
 

@@ -1,5 +1,7 @@
 # LADİR — Unity oyuncu doğrulaması
 
+> Bu belge önceki 1440×1000 doğrulamasıdır. Açılışı da kapsayan yeni, aynı rotalı 1920×1080 karşılaştırması ve kod düzeltmeleri [donma incelemesinde](PERFORMANCE_STUTTER_FIX.md) yer alır. Farklı çözünürlük ve rotalardaki FPS sonuçları doğrudan karşılaştırılmamalıdır.
+
 **25 Ekim 2026 · Çalışan Windows derlemesi.** Kaynak web: v1.26.1 / `34841d6`. Unity 6000.0.80f1, URP 17, Direct3D 11, GTX 1660 Ti; 1440×1000, render scale 1, 4× MSAA. VSync kapalı, FPS limiti yok. Editör açık kaldı; karşılaştırma için açtığımız web test sekmesi ölçüm sırasında boş sayfaya alındı.
 
 ## Sonuç

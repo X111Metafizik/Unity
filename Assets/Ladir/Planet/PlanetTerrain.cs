@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Rendering;
+using Unity.Profiling;
 using static Ladir.Planet.PM;
 
 namespace Ladir.Planet
@@ -42,42 +43,52 @@ namespace Ladir.Planet
         readonly List<Node> seamWork=new List<Node>();
         readonly ConcurrentQueue<Result> completed=new ConcurrentQueue<Result>();
         readonly Stopwatch budget=new Stopwatch();
+        static readonly ProfilerMarker planMarker=new ProfilerMarker("Ladir.Terrain.Plan"),uploadMarker=new ProfilerMarker("Ladir.Terrain.Upload"),submitMarker=new ProfilerMarker("Ladir.Terrain.Submit"),stitchMarker=new ProfilerMarker("Ladir.Terrain.Stitch");
         CancellationTokenSource lifetime;
         int epoch,planTick;double nextPlan;bool ready;uint lastSeamRevision=uint.MaxValue;
+        int createdThisPlan;
+        bool visibilityDirty=true,originValid,evicting;D3 submittedOrigin;int evictCursor;
+        int refinementsLeft;bool transitionPending;
+        Result uploading;int uploadStep;GameObject stagingObject;Mesh stagingLand,stagingWater;
+        public int uploadsThisFrame,uploadStepsThisFrame,stitchedThisFrame,rebaseWritesThisFrame;
         public class Node
         {
             public int face,level,x,y;public double u,v,size,extent,priority;public double featureCell=double.NaN;public D3 center,anchor;public Node parent;public Node[] children;
             public GameObject go;public Mesh land,water;public Vector3[] positions,canonicalPositions;public SurfaceSample[] samples;
+            internal PlanetGridTopology topology;internal Vector3[] boundaryPositions;
             public readonly Node[] neighbours=new Node[4];public readonly uint[] neighbourRevisions=new uint[4];public bool seamsInitialized;public uint seamRevision;public Bounds canonicalBounds;
-            public bool wanted,pending,split,visible;public int wantedTick;public long bytes;public float touched;
+            public bool wanted,viewWanted,pending,split,visible,expanded;public int wantedTick;public long bytes;public float touched;
             public CancellationTokenSource cancel;
             public string Key=>$"{face}/{level}/{x}/{y}";
         }
         sealed class Result
-        {public Node node;public Vector3[] positions,normals;public Color[] colors;public Vector2[] uv,waterUV;public Vector4[] climate;public int[] indices;public Vector3[] water;public int[] waterIndices;public SurfaceSample[] samples;public double buildMs;public int epoch;public Exception error;}
+        {public Node node;public Vector3[] positions,displayPositions,gpuPositions,boundaryPositions;public PlanetLandVertex[] attributes;public PlanetWaterVertex[] waterAttributes;public PlanetGridTopology topology;public Bounds bounds,waterBounds;public Vector3[] water;public int[] waterIndices;public SurfaceSample[] samples;public double buildMs;public int epoch;public Exception error;}
         public void Initialize(TerrainKernel kernel)
         {
             Clear();Kernel=kernel;lifetime=new CancellationTokenSource();epoch++;ready=false;
             for(int f=0;f<6;f++)roots[f]=Make(f,0,0,0,null);
-            nextPlan=0;
+            nextPlan=0;visibilityDirty=true;originValid=false;residentBytes=meshBytes=0;
         }
         Node Make(int f,int level,int x,int y,Node parent)
         {double size=2.0/(1<<level),u=-1+x*size,v=-1+y*size;var d=Face(f,u+size*.5,v+size*.5);var n=new Node{face=f,level=level,x=x,y=y,u=u,v=v,size=size,center=d,anchor=d*Kernel.World.radiusMeters,parent=parent,extent=size*Kernel.World.radiusMeters*.82};all.Add(n);return n;}
         void Update()
         {
             if(Kernel==null)return;
-            lastPlanMs=0;
-            if(Time.unscaledTimeAsDouble>=nextPlan){nextPlan=Time.unscaledTimeAsDouble+.10;long started=Stopwatch.GetTimestamp();Plan();lastPlanMs=(Stopwatch.GetTimestamp()-started)*1000.0/Stopwatch.Frequency;}
-            Upload();long submit=Stopwatch.GetTimestamp();Dispatch();visibleTiles=0;meshBytes=0;residentBytes=0;
-            foreach(var root in roots)if(root!=null)Draw(root,true);
-            StitchVisibleEdges();
-            foreach(var n in all)if(n.go){n.go.transform.position=Coordinates.Float(n.anchor-Origin);meshBytes+=n.bytes;residentBytes+=n.bytes+(n.samples?.Length??0)*128L;}
-            if(residentBytes>MemoryBudget)Evict();
+            lastPlanMs=lastStitchMs=0;stitchedThisFrame=rebaseWritesThisFrame=0;
+            if(Time.unscaledTimeAsDouble>=nextPlan){nextPlan=Time.unscaledTimeAsDouble+.10;long started=Stopwatch.GetTimestamp();using(planMarker.Auto())Plan();lastPlanMs=(Stopwatch.GetTimestamp()-started)*1000.0/Stopwatch.Frequency;visibilityDirty=true;}
+            using(uploadMarker.Auto())Upload();long submit=Stopwatch.GetTimestamp();using(submitMarker.Auto()){
+            Dispatch();
+            if(visibilityDirty){visibleTiles=0;refinementsLeft=2;transitionPending=false;foreach(var root in roots)if(root!=null)Draw(root,true);using(stitchMarker.Auto())StitchVisibleEdges();visibilityDirty=transitionPending;}
+            // Floating origin changes in 1024 m steps, not once per frame.
+            // New uploads already have the current transform before publication.
+            if(!originValid||Origin.x!=submittedOrigin.x||Origin.y!=submittedOrigin.y||Origin.z!=submittedOrigin.z)
+            {foreach(var n in all)if(n.go){n.go.transform.position=Coordinates.Float(n.anchor-Origin);rebaseWritesThisFrame++;}submittedOrigin=Origin;originValid=true;}
+            if(residentBytes>MemoryBudget)evicting=true;if(evicting)Evict();}
             lastSubmitMs=(Stopwatch.GetTimestamp()-submit)*1000.0/Stopwatch.Frequency;
         }
         void Plan()
         {
-            planTick++;requests.Clear();foreach(var n in all){n.wanted=false;n.visible=false;}
+            planTick++;createdThisPlan=0;requests.Clear();foreach(var n in all){n.wanted=false;n.viewWanted=false;}
             foreach(var root in roots)Select(root);
             // Predictive jobs use exactly the same surface, but never displace a
             // visible ancestor or compete ahead of missing foreground coverage.
@@ -116,10 +127,26 @@ namespace Ladir.Planet
             // error alone cannot resolve categorical snow/shore material fields.
             bool orbital=Observer.Length-Kernel.World.radiusMeters>60000&&n.level>=3&&minimum*projection>Math.Max(150,distance*.0036)/Math.Sqrt(incidence);
             bool split=n.level<maxLevel&&(n.level<3||feature||orbital||pixels>pixelError*(n.split?.82:1.12))&&minimum>1.1;
-            Want(n,distance+(n.level*50));n.split=split;
+            Want(n,distance+(n.level*50));n.viewWanted=true;n.split=split;
             if(!split)return;
-            if(n.children==null){n.children=new Node[4];for(int i=0;i<4;i++)n.children[i]=Make(n.face,n.level+1,n.x*2+i%2,n.y*2+i/2,n);}
-            foreach(var child in n.children)Select(child);
+            if(!EnsureChildren(n))return;
+            foreach(var child in n.children)
+            {
+                Select(child);
+                // Keep one ring of sibling coverage warm. A turn that exposes
+                // a previously culled child must not collapse an entire ready
+                // mountain subtree back to its distant ancestor. This requests
+                // only the sibling mesh, never its culled descendants.
+                if(!child.viewWanted)Want(child,1e7+distance+child.level*50);
+            }
+        }
+        bool EnsureChildren(Node n)
+        {
+            if(n.children!=null)return true;
+            // A cold start or teleport must not allocate/evaluate an entire new
+            // quadtree in one Plan. Existing nodes and desired detail are kept.
+            if(createdThisPlan>=128)return false;
+            n.children=new Node[4];for(int i=0;i<4;i++)n.children[i]=Make(n.face,n.level+1,n.x*2+i%2,n.y*2+i/2,n);createdThisPlan+=4;return true;
         }
         void Prefetch(Node n,D3 p,int depth)
         {
@@ -128,15 +155,27 @@ namespace Ladir.Planet
             double surfaceDistance=Math.Max(25,(n.anchor+n.center*height-p).Length-n.extent*.4),focal=Screen.height/(2*Math.Tan(viewCamera.fieldOfView*Math.PI/360)),pixels=Math.Min(3800,n.extent/grid*.19)/surfaceDistance*focal;
             Want(n,1e8+surfaceDistance+n.level*50);
             if(n.level>=maxLevel||pixels<pixelError*1.3||Kernel.World.radiusMeters*n.size/grid<=1.1)return;
-            if(n.children==null){n.children=new Node[4];for(int i=0;i<4;i++)n.children[i]=Make(n.face,n.level+1,n.x*2+i%2,n.y*2+i/2,n);}
+            if(!EnsureChildren(n))return;
             foreach(var c in n.children)Prefetch(c,p,depth+1);
         }
-        void Draw(Node n,bool allowed)
+        void Draw(Node n,bool allowed,bool allowRefine=true)
         {
-            bool childrenReady=n.split&&n.children!=null; if(childrenReady)foreach(var c in n.children)childrenReady&=c.go!=null||!c.wanted;
-            bool show=allowed&&n.wanted&&n.go&&!childrenReady;n.visible=show;
+            // Speculative flight/warp requests are cache demands, not current
+            // camera coverage. They must never hold a visible parent hostage.
+            bool childrenReady=n.split&&n.children!=null; if(childrenReady)foreach(var c in n.children)childrenReady&=c.go!=null||!c.viewWanted;
+            bool previouslyExpanded=n.expanded;
+            if(!allowed||!n.viewWanted||!childrenReady)n.expanded=false;
+            else if(!n.expanded&&n.viewWanted)
+            {
+                // A previously hidden ready subtree can contain hundreds of
+                // renderers. Reveal at most two sibling groups and one depth
+                // per frame, retaining the valid parent for the other groups.
+                if(allowRefine&&n.visible&&refinementsLeft>0){n.expanded=true;refinementsLeft--;}
+                else transitionPending=true;
+            }
+            bool show=allowed&&n.viewWanted&&n.go&&!n.expanded;n.visible=show;
             if(n.go&&n.go.activeSelf!=show){n.go.SetActive(show);Revision++;}if(show)visibleTiles++;
-            if(n.children!=null)foreach(var child in n.children)Draw(child,allowed&&childrenReady);
+            if(n.children!=null)foreach(var child in n.children)Draw(child,allowed&&n.expanded,previouslyExpanded&&allowRefine);
         }
         public bool TrySurfaceHeight(D3 direction,out double height)
         {
@@ -180,12 +219,28 @@ namespace Ladir.Planet
                 for(int e=0;e<4;e++){var coarse=n.neighbours[e];if(coarse==null)continue;for(int k=0;k<=N;k++){int src=e==0?k:e==1?k*side+N:e==2?N*side+N-k:(N-k)*side;var target=coarse;if(k==0||k==N){var other=n.neighbours[(e+(k==0?3:1))%4];if(other!=null&&other.level<target.level)target=other;}var point=n.anchor+Coordinates.Double(n.canonicalPositions[src]);var d=point.Unit;if(!TriangleHeight(target,d,out double h))continue;var moved=Coordinates.Float(d*(Kernel.World.radiusMeters+h)-n.anchor);var delta=moved-n.positions[src];n.positions[src]=moved;
                     // Keep both skirt copies at corners consistent with the top.
                     if(src<side)n.positions[count+src]+=delta;if(src%side==N)n.positions[count+side+src/side]+=delta;if(src>=N*side)n.positions[count+side*2+N-src%side]+=delta;if(src%side==0)n.positions[count+side*3+N-src/side]+=delta;
-                }}n.land.vertices=n.positions;var bounds=n.canonicalBounds;bounds.Expand((float)Math.Max(16,n.extent/grid*2));n.land.bounds=bounds;n.seamsInitialized=true;n.seamRevision++;Revision++;
+                }}var bounds=n.canonicalBounds;for(int i=0;i<n.boundaryPositions.Length;i++){n.boundaryPositions[i]=n.positions[n.topology.gpuToRow[i]];bounds.Encapsulate(n.boundaryPositions[i]);}
+                n.land.SetVertexBufferData(n.boundaryPositions,0,0,n.boundaryPositions.Length,0,PlanetMeshData.Flags);n.land.bounds=bounds;n.seamsInitialized=true;n.seamRevision++;Revision++;stitchedThisFrame++;
             }lastSeamRevision=Revision;lastStitchMs=(Stopwatch.GetTimestamp()-start)*1000.0/Stopwatch.Frequency;
         }
         public (int vertices,double maxGapMeters) CheckVisibleSeams()
         {
             int count=0;double gap=0;foreach(var n in all){if(!n.visible)continue;int side=(int)Math.Round(Math.Sqrt(n.positions.Length+4)-2),N=side-1;for(int e=0;e<4;e++){var neighbour=n.neighbours[e];if(neighbour==null)continue;for(int k=1;k<N;k++){int src=e==0?k:e==1?k*side+N:e==2?N*side+N-k:(N-k)*side;var point=n.anchor+Coordinates.Double(n.positions[src]);if(TriangleHeight(neighbour,point.Unit,out double h)){gap=Math.Max(gap,Math.Abs(point.Length-Kernel.World.radiusMeters-h));count++;}}}}return(count,gap);
+        }
+        // Explicit diagnostic only: verifies the GPU stream reorder and partial
+        // seam writes against the exact CPU surface used by vegetation binding.
+        public (int vertices,float maxPositionErrorMeters,int invalidIndices) CheckUploadedSurface()
+        {
+            int vertices=0,invalid=0;float error=0;
+            foreach(var n in all)if(n.visible&&n.land)
+            {
+                var gpu=n.land.vertices;var indices=n.land.GetIndices(0);
+                if(gpu.Length!=n.positions.Length){invalid++;continue;}
+                for(int i=0;i<gpu.Length;i++){vertices++;error=Mathf.Max(error,Vector3.Distance(gpu[i],n.positions[n.topology.gpuToRow[i]]));}
+                if(indices.Length!=n.topology.indices.Length)invalid++;
+                else for(int i=0;i<indices.Length;i++)if(indices[i]!=n.topology.indices[i])invalid++;
+            }
+            return(vertices,error,invalid);
         }
         public double RenderedCellSize(D3 direction)
         {
@@ -196,9 +251,16 @@ namespace Ladir.Planet
         void Dispatch()
         {
             int limit=Math.Max(1,Math.Min(4,Environment.ProcessorCount-2));
+            // Build the children which can replace a DISPLAYED parent first.
+            // Merely having a parent buffer is insufficient: the old scheduler
+            // built deep hidden descendants while one distant sibling kept a
+            // coarse ancestor on screen, then revealed the whole subtree at once.
+            for(int pass=0;pass<2&&running<limit;pass++)
             for(int i=0;i<requests.Count&&running<limit;i++)
             {
                 var node=requests[i];if(node.pending||node.go||!node.wanted)continue;
+                bool frontier=node.viewWanted&&(node.parent==null||node.parent.visible);if(frontier!=(pass==0))continue;
+                if(residentBytes>MemoryBudget&&node.priority>=1e8)continue;
                 // Start breadth-first: no fine patch can block its own fallback.
                 if(node.parent!=null&&!node.parent.go)continue;
                 node.pending=true;node.cancel=CancellationTokenSource.CreateLinkedTokenSource(lifetime.Token);var token=node.cancel.Token;int generation=epoch;var kernel=Kernel;int cells=node.level<2?16:grid;running++;
@@ -207,12 +269,11 @@ namespace Ladir.Planet
         }
         static Result Build(Node n,TerrainKernel kernel,int N,CancellationToken token)
         {
-            var timer=Stopwatch.StartNew();int side=N+1,count=side*side,skirt=4*side;var p=new Vector3[count+skirt];var normal=new Vector3[p.Length];var colors=new Color[p.Length];var uv=new Vector2[p.Length];var climate=new Vector4[p.Length];var samples=new SurfaceSample[count];double R=kernel.World.radiusMeters;
-            for(int y=0;y<=N;y++){token.ThrowIfCancellationRequested();for(int x=0;x<=N;x++){int i=y*side+x;var d=Face(n.face,n.u+n.size*x/N,n.v+n.size*y/N);var s=kernel.Sample(d);samples[i]=s;p[i]=Coordinates.Float(d*(R+s.height)-n.anchor);var c=TerrainKernel.Color(s);colors[i]=new Color((float)c.x,(float)c.y,(float)c.z,(float)s.lava);uv[i]=new Vector2((float)s.height,(float)s.biome);}}
-            for(int y=0;y<=N;y++)for(int x=0;x<=N;x++){int i=y*side+x;var s=samples[i];climate[i]=new Vector4((float)s.snow,(float)s.moisture,(float)s.protection,(float)s.forest);Vector3 dx=p[y*side+Math.Min(N,x+1)]-p[y*side+Math.Max(0,x-1)],dy=p[Math.Min(N,y+1)*side+x]-p[Math.Max(0,y-1)*side+x];normal[i]=Vector3.Cross(dx,dy).normalized;}
-            var triangles=new int[N*N*6+4*N*6];int at=0;for(int y=0;y<N;y++)for(int x=0;x<N;x++){int a=y*side+x;triangles[at++]=a;triangles[at++]=a+1;triangles[at++]=a+side;triangles[at++]=a+1;triangles[at++]=a+side+1;triangles[at++]=a+side;}
+            var timer=Stopwatch.StartNew();int side=N+1,count=side*side,skirt=4*side;var topology=PlanetGridTopology.Get(N);var p=new Vector3[count+skirt];var attributes=new PlanetLandVertex[p.Length];var samples=new SurfaceSample[count];double R=kernel.World.radiusMeters;
+            for(int y=0;y<=N;y++){token.ThrowIfCancellationRequested();for(int x=0;x<=N;x++){int i=y*side+x;var d=Face(n.face,n.u+n.size*x/N,n.v+n.size*y/N);var s=kernel.Sample(d);samples[i]=s;p[i]=Coordinates.Float(d*(R+s.height)-n.anchor);}}
+            for(int y=0;y<=N;y++)for(int x=0;x<=N;x++){int i=y*side+x;var s=samples[i];var c=TerrainKernel.Color(s);Vector3 dx=p[y*side+Math.Min(N,x+1)]-p[y*side+Math.Max(0,x-1)],dy=p[Math.Min(N,y+1)*side+x]-p[Math.Max(0,y-1)*side+x];attributes[topology.rowToGpu[i]]=new PlanetLandVertex{normal=-Vector3.Cross(dx,dy).normalized,color=new Color((float)c.x,(float)c.y,(float)c.z,(float)s.lava),uv=new Vector2((float)s.height,(float)s.biome),climate=new Vector4((float)s.snow,(float)s.moisture,(float)s.protection,(float)s.forest)};}
             for(int edge=0;edge<4;edge++)for(int k=0;k<=N;k++)
-            {int src=edge==0?k:edge==1?k*side+N:edge==2?N*side+N-k:(N-k)*side;int dst=count+edge*side+k;var radial=Coordinates.Float((n.anchor+Coordinates.Double(p[src])).Unit);p[dst]=p[src]-radial*(float)Math.Max(8,n.extent/N*.8);normal[dst]=normal[src];colors[dst]=colors[src];uv[dst]=uv[src];if(k<N){int next=edge==0?src+1:edge==1?src+side:edge==2?src-1:src-side;triangles[at++]=src;triangles[at++]=dst;triangles[at++]=next;triangles[at++]=next;triangles[at++]=dst;triangles[at++]=dst+1;}}
+            {int src=edge==0?k:edge==1?k*side+N:edge==2?N*side+N-k:(N-k)*side;int dst=count+edge*side+k;var radial=Coordinates.Float((n.anchor+Coordinates.Double(p[src])).Unit);p[dst]=p[src]-radial*(float)Math.Max(8,n.extent/N*.8);attributes[topology.rowToGpu[dst]]=attributes[topology.rowToGpu[src]];}
             var wp=new List<Vector3>();var wu=new List<Vector2>();var wi=new List<int>();
             // Clip each water triangle against the canonical bed; never fill a
             // dry river bank with a rectangle. Each wet vertex retains its reach's level.
@@ -230,37 +291,69 @@ namespace Ladir.Planet
                 for(int j=0;j<3;j++){int k=(j+1)%3;bool wet=depths[j]>0,next=depths[k]>0;if(wet){waterData[length]=new Vector2(kind==0?(float)Math.Exp(-depths[j]/350):kind==1?.8f:.5f,kind);polygon[length++]=Coordinates.Float(ds[j]*(R+levels[j]+.08)-n.anchor);}if(wet!=next){double t=depths[j]/(depths[j]-depths[k]);waterData[length]=new Vector2(kind==0?1:kind==1?.8f:.5f,kind);polygon[length++]=Coordinates.Float((ds[j]+(ds[k]-ds[j])*t).Unit*(R+Mix(levels[j],levels[k],t)+.08)-n.anchor);}}
                 if(length<3)return;int start=wp.Count;for(int j=0;j<length;j++){wp.Add(polygon[j]);wu.Add(waterData[j]);}for(int j=1;j<length-1;j++){wi.Add(start);wi.Add(start+j);wi.Add(start+j+1);}
             }
-            for(int edge=0;edge<4;edge++)for(int k=0;k<=N;k++){int src=edge==0?k:edge==1?k*side+N:edge==2?N*side+N-k:(N-k)*side;climate[count+edge*side+k]=climate[src];}
-            for(int i=0;i<normal.Length;i++)normal[i]=-normal[i];
-            for(int i=0;i<triangles.Length;i+=3){int t=triangles[i+1];triangles[i+1]=triangles[i+2];triangles[i+2]=t;}
             for(int i=0;i<wi.Count;i+=3){int t=wi[i+1];wi[i+1]=wi[i+2];wi[i+2]=t;}
-            return new Result{node=n,positions=p,normals=normal,colors=colors,uv=uv,climate=climate,indices=triangles,water=wp.ToArray(),waterUV=wu.ToArray(),waterIndices=wi.ToArray(),samples=samples,buildMs=timer.Elapsed.TotalMilliseconds};
+            var water=wp.ToArray();var waterAttributes=new PlanetWaterVertex[water.Length];for(int i=0;i<water.Length;i++)waterAttributes[i]=new PlanetWaterVertex{normal=Coordinates.Float((n.anchor+Coordinates.Double(water[i])).Unit),uv=wu[i]};
+            var gpuPositions=new Vector3[p.Length];for(int i=0;i<p.Length;i++)gpuPositions[i]=p[topology.gpuToRow[i]];
+            return new Result{node=n,positions=p,displayPositions=(Vector3[])p.Clone(),gpuPositions=gpuPositions,boundaryPositions=new Vector3[topology.boundaryCount],attributes=attributes,topology=topology,bounds=PlanetMeshData.Bounds(p),water=water,waterAttributes=waterAttributes,waterBounds=PlanetMeshData.Bounds(water),waterIndices=wi.ToArray(),samples=samples,buildMs=timer.Elapsed.TotalMilliseconds};
         }
         void Upload()
         {
-            budget.Restart();int applied=0;
-            while(completed.TryDequeue(out var r))
+            budget.Restart();uploadsThisFrame=uploadStepsThisFrame=0;
+            // The budget is checked BETWEEN mesh stages, not only after an
+            // entire land+water tile has allocated and copied all its buffers.
+            while(budget.Elapsed.TotalMilliseconds<2&&uploadsThisFrame<3)
             {
-                running=Math.Max(0,running-1);r.node.pending=false;r.node.cancel?.Dispose();r.node.cancel=null;
-                if(r.epoch!=epoch||r.error is OperationCanceledException||!r.node.wanted)continue;
-                if(r.error!=null){UnityEngine.Debug.LogException(r.error);continue;}
-                var n=r.node;n.go=new GameObject("Terrain "+n.Key);n.go.transform.SetParent(transform,false);n.go.transform.position=Coordinates.Float(n.anchor-Origin);n.go.SetActive(false);
-                n.land=new Mesh{name=n.Key,indexFormat=IndexFormat.UInt32};n.land.vertices=r.positions;n.land.normals=r.normals;n.land.colors=r.colors;n.land.uv=r.uv;n.land.SetUVs(1,r.climate);n.land.triangles=r.indices;n.land.RecalculateBounds();n.canonicalBounds=n.land.bounds;
-                n.go.AddComponent<MeshFilter>().sharedMesh=n.land;var renderer=n.go.AddComponent<MeshRenderer>();renderer.sharedMaterial=landMaterial;renderer.shadowCastingMode=n.level>=10?ShadowCastingMode.On:ShadowCastingMode.Off;
-                if(r.water.Length>0){var water=new GameObject("Water · clipped banks");water.transform.SetParent(n.go.transform,false);n.water=new Mesh{name="Water "+n.Key,indexFormat=IndexFormat.UInt32};n.water.vertices=r.water;n.water.uv=r.waterUV;n.water.triangles=r.waterIndices;var normals=new Vector3[r.water.Length];for(int i=0;i<normals.Length;i++)normals[i]=Coordinates.Float((n.anchor+Coordinates.Double(r.water[i])).Unit);n.water.normals=normals;n.water.RecalculateBounds();water.AddComponent<MeshFilter>().sharedMesh=n.water;var wr=water.AddComponent<MeshRenderer>();wr.sharedMaterial=waterMaterial;wr.shadowCastingMode=ShadowCastingMode.Off;}
-                n.canonicalPositions=r.positions;n.positions=(Vector3[])r.positions.Clone();n.samples=r.samples;n.bytes=r.positions.Length*76L+r.indices.Length*4L+r.water.Length*32L+r.waterIndices.Length*4L;lastBuildMs=r.buildMs;applied++;
-                if(!ready){ready=true;SurfaceReady?.Invoke();}
-                if(budget.Elapsed.TotalMilliseconds>=2||applied>=3)break;
+                if(uploading==null)
+                {
+                    if(!completed.TryDequeue(out var r))break;
+                    running=Math.Max(0,running-1);
+                    if(r.epoch!=epoch||r.error!=null||!r.node.wanted){ReleaseJob(r.node);if(r.error!=null&&!(r.error is OperationCanceledException))UnityEngine.Debug.LogException(r.error);continue;}
+                    uploading=r;uploadStep=0;
+                }
+                if(uploading.epoch!=epoch||!uploading.node.wanted){ReleaseJob(uploading.node);DiscardStaging();continue;}
+                UploadStep();uploadStepsThisFrame++;
             }
             lastUploadMs=budget.Elapsed.TotalMilliseconds;
         }
+        static void ReleaseJob(Node n){n.pending=false;n.cancel?.Dispose();n.cancel=null;}
+        void UploadStep()
+        {
+            var r=uploading;var n=r.node;
+            switch(uploadStep++)
+            {
+                case 0:
+                    stagingObject=new GameObject("Terrain "+n.Key);stagingObject.SetActive(false);stagingObject.transform.SetParent(transform,false);
+                    stagingLand=new Mesh{name=n.Key};stagingLand.MarkDynamic();stagingLand.SetVertexBufferParams(r.positions.Length,PlanetMeshData.LandLayout);stagingLand.SetIndexBufferParams(r.topology.indices.Length,IndexFormat.UInt32);break;
+                case 1:stagingLand.SetVertexBufferData(r.gpuPositions,0,0,r.gpuPositions.Length,0,PlanetMeshData.Flags);stagingLand.SetVertexBufferData(r.attributes,0,0,r.attributes.Length,1,PlanetMeshData.Flags);break;
+                case 2:
+                    PlanetMeshData.Finish(stagingLand,r.topology.indices,r.positions.Length,r.bounds);stagingObject.AddComponent<MeshFilter>().sharedMesh=stagingLand;var renderer=stagingObject.AddComponent<MeshRenderer>();renderer.sharedMaterial=landMaterial;renderer.shadowCastingMode=n.level>=10?ShadowCastingMode.On:ShadowCastingMode.Off;
+                    if(r.water.Length==0)uploadStep=6;break;
+                case 3:
+                    stagingWater=new Mesh{name="Water "+n.Key};stagingWater.SetVertexBufferParams(r.water.Length,PlanetMeshData.WaterLayout);stagingWater.SetIndexBufferParams(r.waterIndices.Length,IndexFormat.UInt32);break;
+                case 4:stagingWater.SetVertexBufferData(r.water,0,0,r.water.Length,0,PlanetMeshData.Flags);stagingWater.SetVertexBufferData(r.waterAttributes,0,0,r.waterAttributes.Length,1,PlanetMeshData.Flags);break;
+                case 5:
+                    PlanetMeshData.Finish(stagingWater,r.waterIndices,r.water.Length,r.waterBounds);var water=new GameObject("Water · clipped banks");water.transform.SetParent(stagingObject.transform,false);water.AddComponent<MeshFilter>().sharedMesh=stagingWater;var wr=water.AddComponent<MeshRenderer>();wr.sharedMaterial=waterMaterial;wr.shadowCastingMode=ShadowCastingMode.Off;break;
+                case 6:
+                    // Publish atomically: a parent cannot disappear while only
+                    // half of a child's geometry is ready. Rebase may have moved.
+                    stagingObject.transform.position=Coordinates.Float(n.anchor-Origin);n.go=stagingObject;n.land=stagingLand;n.water=stagingWater;n.canonicalBounds=r.bounds;
+                    n.canonicalPositions=r.positions;n.positions=r.displayPositions;n.boundaryPositions=r.boundaryPositions;n.topology=r.topology;n.samples=r.samples;
+                    n.bytes=r.positions.Length*76L+r.topology.indices.Length*4L+r.water.Length*32L+r.waterIndices.Length*4L;
+                    meshBytes+=n.bytes;residentBytes+=n.bytes+r.samples.Length*128L;lastBuildMs=r.buildMs;uploadsThisFrame++;visibilityDirty=true;ReleaseJob(n);
+                    uploading=null;stagingObject=null;stagingLand=stagingWater=null;
+                    if(!ready){ready=true;SurfaceReady?.Invoke();}break;
+            }
+        }
+        void DiscardStaging()
+        {if(stagingObject)Destroy(stagingObject);if(stagingLand)Destroy(stagingLand);if(stagingWater)Destroy(stagingWater);stagingObject=null;stagingLand=stagingWater=null;uploading=null;}
         void Evict()
         {
-            foreach(var n in all)
-            {if(residentBytes<=MemoryBudget*.85)break;if(n.wanted||n.pending||n.level<2||!n.go||Time.unscaledTime-n.touched<4)continue;residentBytes-=n.bytes+(n.samples?.Length??0)*128L;Destroy(n.go);Destroy(n.land);if(n.water)Destroy(n.water);n.positions=n.canonicalPositions=null;n.samples=null;n.bytes=0;n.seamsInitialized=false;Array.Clear(n.neighbours,0,4);}
+            int removed=0,visited=0;long start=Stopwatch.GetTimestamp();
+            while(visited++<all.Count&&removed<2&&(Stopwatch.GetTimestamp()-start)*1000.0/Stopwatch.Frequency<.5)
+            {if(residentBytes<=MemoryBudget*.85){evicting=false;break;}if(evictCursor>=all.Count)evictCursor=0;var n=all[evictCursor++];if(n.wanted||n.visible||n.pending||n.level<2||!n.go||Time.unscaledTime-n.touched<4)continue;residentBytes-=n.bytes+(n.samples?.Length??0)*128L;meshBytes-=n.bytes;Destroy(n.go);Destroy(n.land);if(n.water)Destroy(n.water);n.go=null;n.land=n.water=null;n.positions=n.canonicalPositions=n.boundaryPositions=null;n.samples=null;n.bytes=0;n.seamsInitialized=false;Array.Clear(n.neighbours,0,4);removed++;}
         }
         public void Clear()
-        {lifetime?.Cancel();foreach(var n in all){n.cancel?.Cancel();if(n.go)Destroy(n.go);if(n.land)Destroy(n.land);if(n.water)Destroy(n.water);}all.Clear();requests.Clear();Array.Clear(roots,0,6);lifetime?.Dispose();lifetime=null;}
+        {lifetime?.Cancel();if(uploading!=null)ReleaseJob(uploading.node);DiscardStaging();foreach(var n in all){n.cancel?.Cancel();if(n.go)Destroy(n.go);if(n.land)Destroy(n.land);if(n.water)Destroy(n.water);}all.Clear();requests.Clear();Array.Clear(roots,0,6);lifetime?.Dispose();lifetime=null;residentBytes=meshBytes=0;visibleTiles=0;evicting=false;evictCursor=0;}
         void OnDestroy(){Clear();}
     }
 }

@@ -173,6 +173,7 @@ MonoBehaviour:
   lineMaterial: {fileID: 2100000, guid: bfd8aa845c14c554b976ef13df866b86, type: 2}
   vegetationMaterial: {fileID: 2100000, guid: 2db62cde8d2effd4fafd69679b72fe1c, type: 2}
   rockTexture: {fileID: 2800000, guid: 4b4420feba2fc8c488a8ee27e6b738de, type: 2}
+  hudFont: {fileID: 11400000, guid: 718776406e977b548a9072ae3a7e0f58, type: 2}
   oceanCompute: {fileID: 7200000, guid: 0bf2aa51300e4ceda5cb84e1e0f10072, type: 3}
   vegetationGeometry: {fileID: 4900000, guid: 38daf6884d0f43409c5140f777bacb5b, type: 3}
   volumeNoise: {fileID: 4900000, guid: 1e3ebd9f0fa34de685ef66100e77ce18, type: 3}

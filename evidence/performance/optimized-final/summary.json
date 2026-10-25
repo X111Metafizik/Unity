@@ -1,0 +1,1155 @@
+{
+  "schema": 1,
+  "utc": "2026-10-25T15:15:21.718274Z",
+  "startupMs": {
+    "effects": 27.7856,
+    "vegetation": 6.2478,
+    "clouds": 9.098,
+    "ocean": 1.3159,
+    "hud": 242.4274,
+    "world-load-wall": 2980.2922,
+    "world-hud": 55.006
+  },
+  "graphics": "NVIDIA GeForce GTX 1660 Ti",
+  "api": "Direct3D11",
+  "resolution": [
+    1920,
+    1080
+  ],
+  "quality": {
+    "msaa": 4,
+    "vSync": 0,
+    "terrainGrid": 32,
+    "pixelError": 2.5
+  },
+  "world": "07e3a31e5068b59f6208fc880c1a6e2f0455b595e9475c833372625ecb2c1e3f",
+  "firstFrameSeconds": 0.26882300634920675,
+  "kernelReadySeconds": 3.6336163063492073,
+  "firstSurfaceSeconds": 3.7862834063492077,
+  "flightStartSeconds": 13.636184806349206,
+  "closeDetailSeconds": 14.013626206349208,
+  "allocatedMiB": 288.3334684371948,
+  "monoUsedMiB": 714.5546875,
+  "gcRecorderAvailable": false,
+  "seams": {
+    "Item1": 17112,
+    "Item2": 0.008739183656871319
+  },
+  "surface": {
+    "Item1": 924297,
+    "Item2": 0,
+    "Item3": 0
+  },
+  "phases": [
+    {
+      "name": "startup",
+      "frames": 1289,
+      "longFrames50ms": 5,
+      "longFrames100ms": 1,
+      "collections": 14,
+      "frameMs": {
+        "median": 7.493000000000194,
+        "p95": 11.703699999998207,
+        "p99": 17.442900000000705,
+        "max": 3277.3860999999993
+      },
+      "cpuActiveMs": {
+        "median": 7.6557,
+        "p95": 10.8206,
+        "p99": 16.7974,
+        "max": 3283.8981
+      },
+      "renderThreadMs": {
+        "median": 0.5764,
+        "p95": 1.3981,
+        "p99": 3.7788,
+        "max": 9.3034
+      },
+      "presentWaitMs": {
+        "median": 0.0022,
+        "p95": 0.0034,
+        "p99": 0.0178,
+        "max": 6.0216
+      },
+      "gpuMs": {
+        "median": 7.30368,
+        "p95": 9.74848,
+        "p99": 15.6032,
+        "max": 17.812992
+      },
+      "planMs": {
+        "median": 0,
+        "p95": 0.8162,
+        "p99": 1.5818,
+        "max": 7.5568
+      },
+      "submitMs": {
+        "median": 0.0113,
+        "p95": 1.396,
+        "p99": 3.092,
+        "max": 8.1576
+      },
+      "stitchMs": {
+        "median": 0,
+        "p95": 1.095,
+        "p99": 2.6689,
+        "max": 7.8127
+      },
+      "uploadMs": {
+        "median": 0.0009000000000000001,
+        "p95": 0.35950000000000004,
+        "p99": 0.6989000000000001,
+        "max": 3.5012000000000003
+      },
+      "simulationMs": {
+        "median": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0.0099
+      },
+      "mainThreadAllocated": {
+        "median": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "queue": {
+        "median": 747,
+        "p95": 990,
+        "p99": 1003,
+        "max": 1003
+      },
+      "residentMiB": {
+        "median": 87.99860000610352,
+        "p95": 212.40538024902344,
+        "p99": 224.34528732299805,
+        "max": 227.68771743774414
+      }
+    },
+    {
+      "name": "flight-entry",
+      "frames": 877,
+      "longFrames50ms": 0,
+      "longFrames100ms": 0,
+      "collections": 12,
+      "frameMs": {
+        "median": 13.535699999998485,
+        "p95": 18.05789999999874,
+        "p99": 23.811800000000716,
+        "max": 48.92010000000013
+      },
+      "cpuActiveMs": {
+        "median": 13.5823,
+        "p95": 16.048,
+        "p99": 20.0181,
+        "max": 45.3424
+      },
+      "renderThreadMs": {
+        "median": 0.8285,
+        "p95": 3.1675,
+        "p99": 6.5632,
+        "max": 24.0734
+      },
+      "presentWaitMs": {
+        "median": 0.0024,
+        "p95": 0.0041,
+        "p99": 0.0206,
+        "max": 21.2616
+      },
+      "gpuMs": {
+        "median": 13.2608,
+        "p95": 15.052288,
+        "p99": 16.55424,
+        "max": 18.989056
+      },
+      "planMs": {
+        "median": 0,
+        "p95": 1.1225,
+        "p99": 1.6932,
+        "max": 8.7919
+      },
+      "submitMs": {
+        "median": 0.3054,
+        "p95": 2.2335,
+        "p99": 4.6755,
+        "max": 13.1575
+      },
+      "stitchMs": {
+        "median": 0,
+        "p95": 1.8083,
+        "p99": 4.0527,
+        "max": 11.1898
+      },
+      "uploadMs": {
+        "median": 0.1293,
+        "p95": 0.4496,
+        "p99": 1.0415,
+        "max": 4.6512
+      },
+      "simulationMs": {
+        "median": 0.1778,
+        "p95": 0.4703,
+        "p99": 0.6803,
+        "max": 11.5815
+      },
+      "mainThreadAllocated": {
+        "median": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "queue": {
+        "median": 261,
+        "p95": 547,
+        "p99": 567,
+        "max": 567
+      },
+      "residentMiB": {
+        "median": 329.8876838684082,
+        "p95": 378.2608299255371,
+        "p99": 382.2674140930176,
+        "max": 383.8478240966797
+      }
+    },
+    {
+      "name": "cruise",
+      "frames": 863,
+      "longFrames50ms": 0,
+      "longFrames100ms": 0,
+      "collections": 1,
+      "frameMs": {
+        "median": 13.919700000002422,
+        "p95": 16.272800000002974,
+        "p99": 18.661999999999068,
+        "max": 23.72890000000183
+      },
+      "cpuActiveMs": {
+        "median": 13.968,
+        "p95": 15.7275,
+        "p99": 17.195,
+        "max": 18.2413
+      },
+      "renderThreadMs": {
+        "median": 0.6884,
+        "p95": 1.2624,
+        "p99": 4.6104,
+        "max": 15.6788
+      },
+      "presentWaitMs": {
+        "median": 0.0025,
+        "p95": 0.0042,
+        "p99": 0.0287,
+        "max": 5.6128
+      },
+      "gpuMs": {
+        "median": 13.680896,
+        "p95": 15.2256,
+        "p99": 16.572928,
+        "max": 17.713664
+      },
+      "planMs": {
+        "median": 0,
+        "p95": 0.8258,
+        "p99": 1.1643,
+        "max": 2.55
+      },
+      "submitMs": {
+        "median": 0.0062,
+        "p95": 1.2586,
+        "p99": 2.1151,
+        "max": 10.2652
+      },
+      "stitchMs": {
+        "median": 0,
+        "p95": 0.9428,
+        "p99": 1.721,
+        "max": 9.9923
+      },
+      "uploadMs": {
+        "median": 0.0005,
+        "p95": 0.2323,
+        "p99": 0.6592,
+        "max": 2.0735
+      },
+      "simulationMs": {
+        "median": 0.1693,
+        "p95": 0.3588,
+        "p99": 0.5438,
+        "max": 0.7112
+      },
+      "mainThreadAllocated": {
+        "median": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "queue": {
+        "median": 0,
+        "p95": 4,
+        "p99": 8,
+        "max": 8
+      },
+      "residentMiB": {
+        "median": 360.6069145202637,
+        "p95": 378.82010650634766,
+        "p99": 380.0416450500488,
+        "max": 380.0416450500488
+      }
+    },
+    {
+      "name": "boost-combat",
+      "frames": 595,
+      "longFrames50ms": 0,
+      "longFrames100ms": 0,
+      "collections": 0,
+      "frameMs": {
+        "median": 13.429000000002134,
+        "p95": 16.913399999999967,
+        "p99": 18.09700000000447,
+        "max": 22.579100000001517
+      },
+      "cpuActiveMs": {
+        "median": 13.36,
+        "p95": 15.6706,
+        "p99": 16.955,
+        "max": 19.7801
+      },
+      "renderThreadMs": {
+        "median": 0.6818,
+        "p95": 1.5854,
+        "p99": 2.546,
+        "max": 4.4238
+      },
+      "presentWaitMs": {
+        "median": 0.0024,
+        "p95": 0.0043,
+        "p99": 0.023,
+        "max": 0.0311
+      },
+      "gpuMs": {
+        "median": 13.094656,
+        "p95": 15.151104,
+        "p99": 16.139008,
+        "max": 17.848832
+      },
+      "planMs": {
+        "median": 0,
+        "p95": 0.9084,
+        "p99": 1.3019,
+        "max": 1.4639
+      },
+      "submitMs": {
+        "median": 0.0095,
+        "p95": 1.7729,
+        "p99": 3.0238,
+        "max": 7.8756
+      },
+      "stitchMs": {
+        "median": 0,
+        "p95": 1.4576,
+        "p99": 2.4811,
+        "max": 7.381
+      },
+      "uploadMs": {
+        "median": 0.0006000000000000001,
+        "p95": 0.1809,
+        "p99": 0.3119,
+        "max": 0.7679
+      },
+      "simulationMs": {
+        "median": 0.293,
+        "p95": 0.6204,
+        "p99": 0.854,
+        "max": 1.0005
+      },
+      "mainThreadAllocated": {
+        "median": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "queue": {
+        "median": 4,
+        "p95": 12,
+        "p99": 24,
+        "max": 24
+      },
+      "residentMiB": {
+        "median": 363.0837821960449,
+        "p95": 382.3830032348633,
+        "p99": 383.3846015930176,
+        "max": 383.83406829833984
+      }
+    },
+    {
+      "name": "boost-release",
+      "frames": 515,
+      "longFrames50ms": 0,
+      "longFrames100ms": 0,
+      "collections": 1,
+      "frameMs": {
+        "median": 15.567400000001896,
+        "p95": 19.255299999997533,
+        "p99": 20.8832000000001,
+        "max": 26.06660000000005
+      },
+      "cpuActiveMs": {
+        "median": 15.5768,
+        "p95": 17.3117,
+        "p99": 18.7398,
+        "max": 19.0869
+      },
+      "renderThreadMs": {
+        "median": 0.7505,
+        "p95": 2.0578,
+        "p99": 3.5924,
+        "max": 11.291
+      },
+      "presentWaitMs": {
+        "median": 0.0024,
+        "p95": 0.0043,
+        "p99": 0.0048,
+        "max": 0.0293
+      },
+      "gpuMs": {
+        "median": 15.227392,
+        "p95": 16.905984,
+        "p99": 17.764352,
+        "max": 18.87104
+      },
+      "planMs": {
+        "median": 0,
+        "p95": 1.2354,
+        "p99": 1.9401,
+        "max": 4.6672
+      },
+      "submitMs": {
+        "median": 0.3438,
+        "p95": 2.6201,
+        "p99": 3.4361,
+        "max": 5.6284
+      },
+      "stitchMs": {
+        "median": 0,
+        "p95": 2.0704,
+        "p99": 2.9891,
+        "max": 5.0074
+      },
+      "uploadMs": {
+        "median": 0.001,
+        "p95": 0.2204,
+        "p99": 0.30010000000000003,
+        "max": 0.45080000000000003
+      },
+      "simulationMs": {
+        "median": 0.3259,
+        "p95": 0.7268,
+        "p99": 0.9518,
+        "max": 1.4699
+      },
+      "mainThreadAllocated": {
+        "median": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "queue": {
+        "median": 10,
+        "p95": 59,
+        "p99": 62,
+        "max": 62
+      },
+      "residentMiB": {
+        "median": 365.84972763061523,
+        "p95": 381.91650009155273,
+        "p99": 383.46928787231445,
+        "max": 383.8988914489746
+      }
+    },
+    {
+      "name": "turn",
+      "frames": 564,
+      "longFrames50ms": 0,
+      "longFrames100ms": 0,
+      "collections": 4,
+      "frameMs": {
+        "median": 14.49490000000253,
+        "p95": 19.323700000001054,
+        "p99": 23.62589999999898,
+        "max": 29.758400000005736
+      },
+      "cpuActiveMs": {
+        "median": 14.8821,
+        "p95": 17.1965,
+        "p99": 19.4551,
+        "max": 25.0552
+      },
+      "renderThreadMs": {
+        "median": 0.8299,
+        "p95": 1.9782,
+        "p99": 4.2417,
+        "max": 15.8622
+      },
+      "presentWaitMs": {
+        "median": 0.0024,
+        "p95": 0.0042,
+        "p99": 0.0144,
+        "max": 11.7437
+      },
+      "gpuMs": {
+        "median": 14.604544,
+        "p95": 16.70912,
+        "p99": 18.03264,
+        "max": 19.232512
+      },
+      "planMs": {
+        "median": 0,
+        "p95": 1.5609,
+        "p99": 2.2628,
+        "max": 3.7659
+      },
+      "submitMs": {
+        "median": 1.7484,
+        "p95": 5.0114,
+        "p99": 10.0071,
+        "max": 13.2536
+      },
+      "stitchMs": {
+        "median": 1.1179,
+        "p95": 3.9908,
+        "p99": 9.532,
+        "max": 12.6168
+      },
+      "uploadMs": {
+        "median": 0.111,
+        "p95": 0.25470000000000004,
+        "p99": 0.342,
+        "max": 1.0541
+      },
+      "simulationMs": {
+        "median": 0.1994,
+        "p95": 0.437,
+        "p99": 0.6353,
+        "max": 5.6459
+      },
+      "mainThreadAllocated": {
+        "median": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "queue": {
+        "median": 393,
+        "p95": 656,
+        "p99": 659,
+        "max": 659
+      },
+      "residentMiB": {
+        "median": 399.5042915344238,
+        "p95": 417.0711898803711,
+        "p99": 418.0892639160156,
+        "max": 418.5848617553711
+      }
+    },
+    {
+      "name": "descent",
+      "frames": 439,
+      "longFrames50ms": 0,
+      "longFrames100ms": 0,
+      "collections": 1,
+      "frameMs": {
+        "median": 18.038200000006555,
+        "p95": 22.73739999999691,
+        "p99": 27.290200000010145,
+        "max": 43.390399999992724
+      },
+      "cpuActiveMs": {
+        "median": 18.0143,
+        "p95": 20.2207,
+        "p99": 21.4094,
+        "max": 28.1653
+      },
+      "renderThreadMs": {
+        "median": 0.8861,
+        "p95": 1.6975,
+        "p99": 2.0462,
+        "max": 4.6499
+      },
+      "presentWaitMs": {
+        "median": 0.0025,
+        "p95": 0.0042,
+        "p99": 0.0049,
+        "max": 0.0051
+      },
+      "gpuMs": {
+        "median": 17.79456,
+        "p95": 19.660288,
+        "p99": 21.124864,
+        "max": 22.883584
+      },
+      "planMs": {
+        "median": 0,
+        "p95": 1.5011,
+        "p99": 2.488,
+        "max": 5.5421
+      },
+      "submitMs": {
+        "median": 0.6924,
+        "p95": 3.5091,
+        "p99": 4.4786,
+        "max": 18.2494
+      },
+      "stitchMs": {
+        "median": 0,
+        "p95": 2.8272,
+        "p99": 3.7848,
+        "max": 10.0996
+      },
+      "uploadMs": {
+        "median": 0.1124,
+        "p95": 0.2353,
+        "p99": 0.29660000000000003,
+        "max": 0.4662
+      },
+      "simulationMs": {
+        "median": 0.2104,
+        "p95": 0.5569,
+        "p99": 0.8044,
+        "max": 1.5179
+      },
+      "mainThreadAllocated": {
+        "median": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "queue": {
+        "median": 12,
+        "p95": 21,
+        "p99": 29,
+        "max": 29
+      },
+      "residentMiB": {
+        "median": 404.2570266723633,
+        "p95": 421.3012886047363,
+        "p99": 422.78808212280273,
+        "max": 423.2836799621582
+      }
+    },
+    {
+      "name": "recovery",
+      "frames": 1002,
+      "longFrames50ms": 0,
+      "longFrames100ms": 0,
+      "collections": 3,
+      "frameMs": {
+        "median": 6.297600000010561,
+        "p95": 18.262200000009443,
+        "p99": 22.21020000001772,
+        "max": 33.023899999989226
+      },
+      "cpuActiveMs": {
+        "median": 6.2756,
+        "p95": 17.7149,
+        "p99": 20.1003,
+        "max": 28.4568
+      },
+      "renderThreadMs": {
+        "median": 0.4048,
+        "p95": 1.1348,
+        "p99": 1.6625,
+        "max": 2.4772
+      },
+      "presentWaitMs": {
+        "median": 0.0022,
+        "p95": 0.0039,
+        "p99": 0.0166,
+        "max": 3.4933
+      },
+      "gpuMs": {
+        "median": 5.005312,
+        "p95": 17.391872,
+        "p99": 18.796544,
+        "max": 22.464
+      },
+      "planMs": {
+        "median": 0,
+        "p95": 1.0453,
+        "p99": 1.5632,
+        "max": 2.6774
+      },
+      "submitMs": {
+        "median": 1.3594,
+        "p95": 4.5433,
+        "p99": 7.2957,
+        "max": 12.4009
+      },
+      "stitchMs": {
+        "median": 0.8345,
+        "p95": 3.7186,
+        "p99": 6.1447,
+        "max": 9.0985
+      },
+      "uploadMs": {
+        "median": 0.0006000000000000001,
+        "p95": 0.1666,
+        "p99": 0.2602,
+        "max": 1.135
+      },
+      "simulationMs": {
+        "median": 0.0013,
+        "p95": 0.3467,
+        "p99": 0.5278,
+        "max": 0.7141
+      },
+      "mainThreadAllocated": {
+        "median": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "queue": {
+        "median": 2,
+        "p95": 27,
+        "p99": 31,
+        "max": 33
+      },
+      "residentMiB": {
+        "median": 346.88562774658203,
+        "p95": 392.6713523864746,
+        "p99": 395.14934158325195,
+        "max": 395.6449394226074
+      }
+    }
+  ],
+  "errors": [],
+  "firstPresentedSeconds": 3.546209106349206,
+  "closeDetailAfterFlightSeconds": 0.37744140000000215,
+  "slowestFrames": [
+    {
+      "index": 0,
+      "phase": 0,
+      "nodes": 0,
+      "queue": 0,
+      "workers": 0,
+      "visible": 0,
+      "elapsed": 3.546209106349206,
+      "frameMs": 3277.3860999999993,
+      "planMs": 0,
+      "submitMs": 0,
+      "stitchMs": 0,
+      "uploadMs": 0,
+      "simulationMs": 0,
+      "controllerMs": 0,
+      "cpuMs": 0,
+      "cpuActiveMs": 0,
+      "renderThreadMs": 0,
+      "presentWaitMs": 0,
+      "gpuMs": 0,
+      "cellMeters": "Infinity",
+      "meshMiB": 0,
+      "residentMiB": 0,
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "simulationTime": 0,
+      "gcBytes": -1,
+      "mainThreadAllocated": 0,
+      "collections": 62
+    },
+    {
+      "index": 1,
+      "phase": 0,
+      "nodes": 6,
+      "queue": 0,
+      "workers": 0,
+      "visible": 0,
+      "elapsed": 3.6336163063492073,
+      "frameMs": 87.40720000000124,
+      "planMs": 0,
+      "submitMs": 0,
+      "stitchMs": 0,
+      "uploadMs": 0,
+      "simulationMs": 0,
+      "controllerMs": 0,
+      "cpuMs": 0,
+      "cpuActiveMs": 0,
+      "renderThreadMs": 0,
+      "presentWaitMs": 0,
+      "gpuMs": 0,
+      "cellMeters": "Infinity",
+      "meshMiB": 0,
+      "residentMiB": 0,
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "simulationTime": 0,
+      "gcBytes": -1,
+      "mainThreadAllocated": 0,
+      "collections": 62
+    },
+    {
+      "index": 4,
+      "phase": 0,
+      "nodes": 262,
+      "queue": 122,
+      "workers": 4,
+      "visible": 0,
+      "elapsed": 3.7772555063492064,
+      "frameMs": 83.58579999999982,
+      "planMs": 1.1109,
+      "submitMs": 0.0203,
+      "stitchMs": 0,
+      "uploadMs": 2.1873,
+      "simulationMs": 0,
+      "controllerMs": 0.1254,
+      "cpuMs": 3283.9236,
+      "cpuActiveMs": 3283.8981,
+      "renderThreadMs": 0.3347,
+      "presentWaitMs": 0,
+      "gpuMs": 0,
+      "cellMeters": "Infinity",
+      "meshMiB": 0,
+      "residentMiB": 0,
+      "x": -494875.0161275842,
+      "y": 347863.67977287795,
+      "z": 3967564.186492239,
+      "simulationTime": 0,
+      "gcBytes": -1,
+      "mainThreadAllocated": 0,
+      "collections": 62
+    },
+    {
+      "index": 7,
+      "phase": 0,
+      "nodes": 262,
+      "queue": 122,
+      "workers": 4,
+      "visible": 6,
+      "elapsed": 3.8635066063492065,
+      "frameMs": 65.2165999999994,
+      "planMs": 0,
+      "submitMs": 0.0786,
+      "stitchMs": 0,
+      "uploadMs": 0.1804,
+      "simulationMs": 0,
+      "controllerMs": 0.129,
+      "cpuMs": 81.9646,
+      "cpuActiveMs": 81.9563,
+      "renderThreadMs": 0.4821,
+      "presentWaitMs": 0.0027,
+      "gpuMs": 11.584512,
+      "cellMeters": 500000,
+      "meshMiB": 0.6232566833496094,
+      "residentMiB": 0.9407615661621094,
+      "x": -494875.0161275842,
+      "y": 347863.67977287795,
+      "z": 3967564.186492239,
+      "simulationTime": 0,
+      "gcBytes": -1,
+      "mainThreadAllocated": 0,
+      "collections": 63
+    },
+    {
+      "index": 2,
+      "phase": 0,
+      "nodes": 134,
+      "queue": 38,
+      "workers": 4,
+      "visible": 0,
+      "elapsed": 3.688913706349206,
+      "frameMs": 55.29739999999883,
+      "planMs": 2.6466,
+      "submitMs": 5.3171,
+      "stitchMs": 0.0323,
+      "uploadMs": 0.1207,
+      "simulationMs": 0,
+      "controllerMs": 5.388,
+      "cpuMs": 0,
+      "cpuActiveMs": 0,
+      "renderThreadMs": 0,
+      "presentWaitMs": 0,
+      "gpuMs": 0,
+      "cellMeters": "Infinity",
+      "meshMiB": 0,
+      "residentMiB": 0,
+      "x": -494875.0161275842,
+      "y": 347863.67977287795,
+      "z": 3967564.186492239,
+      "simulationTime": 0,
+      "gcBytes": -1,
+      "mainThreadAllocated": 0,
+      "collections": 62
+    },
+    {
+      "index": 1290,
+      "phase": 1,
+      "nodes": 1466,
+      "queue": 371,
+      "workers": 4,
+      "visible": 320,
+      "elapsed": 13.731709906349206,
+      "frameMs": 48.92010000000013,
+      "planMs": 8.7919,
+      "submitMs": 4.4097,
+      "stitchMs": 3.5139,
+      "uploadMs": 0.9798,
+      "simulationMs": 0.7214,
+      "controllerMs": 1.0874,
+      "cpuMs": 9.3198,
+      "cpuActiveMs": 9.3084,
+      "renderThreadMs": 0.9474,
+      "presentWaitMs": 0.0018,
+      "gpuMs": 9.695232,
+      "cellMeters": 30.517578125,
+      "meshMiB": 116.48617172241211,
+      "residentMiB": 229.3803367614746,
+      "x": -493312.8116172537,
+      "y": 360064.0242120786,
+      "z": 3955039.515686134,
+      "simulationTime": 0.06666666666666667,
+      "gcBytes": -1,
+      "mainThreadAllocated": 0,
+      "collections": 76
+    },
+    {
+      "index": 5130,
+      "phase": 6,
+      "nodes": 3850,
+      "queue": 19,
+      "workers": 4,
+      "visible": 860,
+      "elapsed": 69.45310830634921,
+      "frameMs": 43.390399999992724,
+      "planMs": 5.5421,
+      "submitMs": 18.2494,
+      "stitchMs": 4.6105,
+      "uploadMs": 0.21660000000000001,
+      "simulationMs": 0.2469,
+      "controllerMs": 0.3371,
+      "cpuMs": 18.6582,
+      "cpuActiveMs": 18.6422,
+      "renderThreadMs": 0.8343,
+      "presentWaitMs": 0.0047,
+      "gpuMs": 18.692864,
+      "cellMeters": 0.95367431640625,
+      "meshMiB": 191.16152572631836,
+      "residentMiB": 393.74868392944336,
+      "x": -492993.375705811,
+      "y": 370512.40090265084,
+      "z": 3954109.223660148,
+      "simulationTime": 55.78333333333145,
+      "gcBytes": -1,
+      "mainThreadAllocated": 0,
+      "collections": 95
+    },
+    {
+      "index": 1971,
+      "phase": 1,
+      "nodes": 1878,
+      "queue": 60,
+      "workers": 4,
+      "visible": 757,
+      "elapsed": 22.900775306349207,
+      "frameMs": 37.091100000001376,
+      "planMs": 0,
+      "submitMs": 0.0118,
+      "stitchMs": 0,
+      "uploadMs": 0.0005,
+      "simulationMs": 0.3025,
+      "controllerMs": 23.2458,
+      "cpuMs": 13.6625,
+      "cpuActiveMs": 13.6496,
+      "renderThreadMs": 0.7783,
+      "presentWaitMs": 0.0024,
+      "gpuMs": 13.344768,
+      "cellMeters": 7.62939453125,
+      "meshMiB": 182.32149124145508,
+      "residentMiB": 352.7763252258301,
+      "x": -493292.9206447651,
+      "y": 361838.55870816833,
+      "z": 3954880.0436830884,
+      "simulationTime": 9.233333333333372,
+      "gcBytes": -1,
+      "mainThreadAllocated": 0,
+      "collections": 85
+    },
+    {
+      "index": 1288,
+      "phase": 0,
+      "nodes": 1338,
+      "queue": 278,
+      "workers": 4,
+      "visible": 600,
+      "elapsed": 13.666324706349208,
+      "frameMs": 34.551300000000396,
+      "planMs": 0,
+      "submitMs": 0.7735,
+      "stitchMs": 0,
+      "uploadMs": 0.221,
+      "simulationMs": 0.0099,
+      "controllerMs": 1.3071,
+      "cpuMs": 9.4467,
+      "cpuActiveMs": 9.4048,
+      "renderThreadMs": 0.8369,
+      "presentWaitMs": 0.0018,
+      "gpuMs": 9.091584,
+      "cellMeters": 30.517578125,
+      "meshMiB": 115.59115982055664,
+      "residentMiB": 227.68771743774414,
+      "x": -493312.9559393941,
+      "y": 360051.11881131126,
+      "z": 3955040.6727608233,
+      "simulationTime": 0,
+      "gcBytes": -1,
+      "mainThreadAllocated": 0,
+      "collections": 76
+    },
+    {
+      "index": 5137,
+      "phase": 6,
+      "nodes": 3854,
+      "queue": 18,
+      "workers": 4,
+      "visible": 863,
+      "elapsed": 69.5848994063492,
+      "frameMs": 34.23549999999409,
+      "planMs": 0,
+      "submitMs": 0.0536,
+      "stitchMs": 0,
+      "uploadMs": 0.0008,
+      "simulationMs": 0.4617,
+      "controllerMs": 0.5306,
+      "cpuMs": 18.2077,
+      "cpuActiveMs": 18.1894,
+      "renderThreadMs": 1.0937,
+      "presentWaitMs": 0.0026,
+      "gpuMs": 19.099648,
+      "cellMeters": 0.95367431640625,
+      "meshMiB": 190.12774658203125,
+      "residentMiB": 391.51849365234375,
+      "x": -492988.8077645112,
+      "y": 370537.8633933829,
+      "z": 3954112.9762730645,
+      "simulationTime": 55.93333333333144,
+      "gcBytes": -1,
+      "mainThreadAllocated": 0,
+      "collections": 95
+    },
+    {
+      "index": 2022,
+      "phase": 1,
+      "nodes": 1890,
+      "queue": 14,
+      "workers": 4,
+      "visible": 784,
+      "elapsed": 23.634203906349207,
+      "frameMs": 33.815799999999285,
+      "planMs": 0,
+      "submitMs": 2.2521,
+      "stitchMs": 0,
+      "uploadMs": 1.1319000000000001,
+      "simulationMs": 0.1763,
+      "controllerMs": 0.2479,
+      "cpuMs": 13.6275,
+      "cpuActiveMs": 13.6139,
+      "renderThreadMs": 0.9091,
+      "presentWaitMs": 0.0027,
+      "gpuMs": 13.910016,
+      "cellMeters": 7.62939453125,
+      "meshMiB": 177.14583587646484,
+      "residentMiB": 340.57149505615234,
+      "x": -493291.3126416831,
+      "y": 361981.6304101283,
+      "z": 3954867.1518311403,
+      "simulationTime": 9.983333333333409,
+      "gcBytes": -1,
+      "mainThreadAllocated": 0,
+      "collections": 88
+    },
+    {
+      "index": 1874,
+      "phase": 1,
+      "nodes": 1846,
+      "queue": 121,
+      "workers": 4,
+      "visible": 695,
+      "elapsed": 21.518296006349207,
+      "frameMs": 33.19889999999859,
+      "planMs": 0,
+      "submitMs": 0.5702,
+      "stitchMs": 0,
+      "uploadMs": 4.6512,
+      "simulationMs": 0.167,
+      "controllerMs": 0.1883,
+      "cpuMs": 15.1419,
+      "cpuActiveMs": 15.1338,
+      "renderThreadMs": 0.9008,
+      "presentWaitMs": 0.0021,
+      "gpuMs": 14.452736,
+      "cellMeters": 7.62939453125,
+      "meshMiB": 191.4235954284668,
+      "residentMiB": 374.7730827331543,
+      "x": -493295.91710389947,
+      "y": 361571.7971646413,
+      "z": 3954904.0672113737,
+      "simulationTime": 7.866666666666644,
+      "gcBytes": -1,
+      "mainThreadAllocated": 0,
+      "collections": 81
+    }
+  ],
+  "flight": {
+    "frames": 4855,
+    "meanFps": 75.87906526175237,
+    "frameMs": {
+      "median": 13.792600000002153,
+      "p95": 19.52079999999512,
+      "p99": 23.20220000000006,
+      "max": 48.92010000000013
+    },
+    "longFrames50ms": 0,
+    "longFrames100ms": 0,
+    "minimumCellMeters": 0.95367431640625,
+    "maxResidentMiB": 423.2836799621582,
+    "maxMeshMiB": 207.30208587646484,
+    "maxQueue": 659
+  },
+  "visibilityChange": {
+    "median": 0,
+    "p95": 6,
+    "p99": 6,
+    "max": 7
+  },
+  "finalCamera": {
+    "index": 6143,
+    "phase": 7,
+    "nodes": 4126,
+    "queue": 5,
+    "workers": 4,
+    "visible": 757,
+    "elapsed": 77.64971700634919,
+    "frameMs": 3.4295999999756077,
+    "planMs": 0,
+    "submitMs": 0.0056,
+    "stitchMs": 0,
+    "uploadMs": 0.0006000000000000001,
+    "simulationMs": 0.1594,
+    "controllerMs": 0.1824,
+    "cpuMs": 6.9409,
+    "cpuActiveMs": 6.9282,
+    "renderThreadMs": 0.522,
+    "presentWaitMs": 0.0027,
+    "gpuMs": 3.670272,
+    "cellMeters": 7.62939453125,
+    "meshMiB": 164.79787826538086,
+    "residentMiB": 336.81008529663086,
+    "x": -492778.08094729163,
+    "y": 371935.49431326037,
+    "z": 3954597.805477806,
+    "simulationTime": 64.01666666666432,
+    "gcBytes": -1,
+    "mainThreadAllocated": 0,
+    "collections": 98
+  }
+}

@@ -14,6 +14,7 @@ namespace Ladir.Planet
     {
         public Mesh shipMesh;public Material shipMaterial,terrainMaterial,waterMaterial,thrusterMaterial,lightMaterial,cloudMaterial,warpMaterial,skyMaterial,lineMaterial,vegetationMaterial;
         public Texture2D rockTexture;
+        public UnityEngine.TextCore.Text.FontAsset hudFont;
         public ComputeShader oceanCompute;
         public TextAsset vegetationGeometry,volumeNoise;
         public UnityEngine.UIElements.PanelSettings panelSettings;public UnityEngine.UIElements.StyleSheet styleSheet;
@@ -27,6 +28,9 @@ namespace Ladir.Planet
         public float waterDetail=1,wind=.6f;public int volumeSteps=32;
         public int tintMode,inspectLayer;public bool pausedSky;
         public double lastSimulationMs,lastControllerMs;
+        public Action<FlightModel> BeforeSimulationStep;
+        public readonly System.Collections.Generic.Dictionary<string,double> startupMs=new System.Collections.Generic.Dictionary<string,double>();
+        void MeasureStartup(string name,Action action){long start=System.Diagnostics.Stopwatch.GetTimestamp();action();startupMs[name]=(System.Diagnostics.Stopwatch.GetTimestamp()-start)*1000.0/System.Diagnostics.Stopwatch.Frequency;}
         Transform ship;PlanetEffects effects;PlanetVegetation vegetation;PlanetClouds cloudRenderer;Material sky;
         double accumulator,followDistance=255,orbitAzimuth,orbitElevation=.22,lastA=-10,lastD=-10;bool cockpit;float nextHud;D3 spawn;
         string currentPath;int loadTicket;Task<TerrainKernel> loading;
@@ -40,13 +44,13 @@ namespace Ladir.Planet
             sky=new Material(skyMaterial);RenderSettings.skybox=sky;
             Terrain=new GameObject("Planet · canonical quadtree").AddComponent<PlanetTerrain>();Terrain.landMaterial=new Material(terrainMaterial);Terrain.waterMaterial=new Material(waterMaterial);Terrain.viewCamera=Camera;
             ship=new GameObject("Starlight Voyager · 110 m").transform;ship.gameObject.AddComponent<MeshFilter>().sharedMesh=shipMesh;ship.gameObject.AddComponent<MeshRenderer>().sharedMaterial=shipMaterial;ship.gameObject.SetActive(false);
-            effects=gameObject.AddComponent<PlanetEffects>();effects.Initialize(this,ship,thrusterMaterial,lightMaterial,warpMaterial);
-            vegetation=gameObject.AddComponent<PlanetVegetation>();vegetation.Initialize(this);
+            MeasureStartup("effects",()=>{effects=gameObject.AddComponent<PlanetEffects>();effects.Initialize(this,ship,thrusterMaterial,lightMaterial,warpMaterial);});
+            MeasureStartup("vegetation",()=>{vegetation=gameObject.AddComponent<PlanetVegetation>();vegetation.Initialize(this);});
             gameObject.AddComponent<PlanetHydrologyOverlay>().Initialize(this);
             Routes=gameObject.AddComponent<PlanetRoutePreview>();Routes.Initialize(this);
-            cloudRenderer=gameObject.AddComponent<PlanetClouds>();cloudRenderer.Initialize(this,cloudMaterial);
-            gameObject.AddComponent<PlanetOcean>().Initialize(this,oceanCompute);
-            Hud=gameObject.AddComponent<PlanetHUD>();Hud.Initialize(this,panelSettings,styleSheet);
+            MeasureStartup("clouds",()=>{cloudRenderer=gameObject.AddComponent<PlanetClouds>();cloudRenderer.Initialize(this,cloudMaterial);});
+            MeasureStartup("ocean",()=>gameObject.AddComponent<PlanetOcean>().Initialize(this,oceanCompute));
+            MeasureStartup("hud",()=>{Hud=gameObject.AddComponent<PlanetHUD>();Hud.Initialize(this,panelSettings,styleSheet);});
             await Load(Path.Combine(Application.streamingAssetsPath,"Ladir/planet/river-v42.planet"));
         }
         public async Task Load(string path)
@@ -54,10 +58,10 @@ namespace Ladir.Planet
             int ticket=++loadTicket;Busy=true;Status="Dünya paketi doğrulanıyor ve havza indeksi açılıyor…";
             try
             {
-                loading=Task.Run(()=>new TerrainKernel(PlanetWorld.Load(path)));var kernel=await loading;
+                long loadStart=System.Diagnostics.Stopwatch.GetTimestamp();loading=Task.Run(()=>new TerrainKernel(PlanetWorld.Load(path)));var kernel=await loading;startupMs["world-load-wall"]=(System.Diagnostics.Stopwatch.GetTimestamp()-loadStart)*1000.0/System.Diagnostics.Stopwatch.Frequency;
                 if(!this||ticket!=loadTicket){kernel.Dispose();return;}ExitFlight();var old=Kernel;Kernel=kernel;Terrain.Initialize(kernel);currentPath=path;
                 // This is the same river-v42 world and local frame as the web fixture.
-                Focus=Kernel.World.Direction((-19200+800)/Kernel.World.radiusMeters,(48000-6700)/Kernel.World.radiusMeters);spawn=Focus;LightAnchor=Focus;range=18000;orbitTilt=.85;ApplyAppearance(Kernel.World.Metadata["appearanceConfig"] as JObject);Status="Dünya hazır · "+Kernel.World.generationConfig.seed;Hud.WorldChanged();
+                Focus=Kernel.World.Direction((-19200+800)/Kernel.World.radiusMeters,(48000-6700)/Kernel.World.radiusMeters);spawn=Focus;LightAnchor=Focus;range=18000;orbitTilt=.85;ApplyAppearance(Kernel.World.appearanceConfig);Status="Dünya hazır · "+Kernel.World.generationConfig.seed;MeasureStartup("world-hud",()=>Hud.WorldChanged());
                 // Active jobs retain their own lease until cancellation drains.
                 old?.Dispose();
             }
@@ -104,7 +108,7 @@ namespace Ladir.Planet
                     float wheel=mouse?.scroll.ReadValue().y??0;if(wheel!=0&&!PointerOverUI){if(Flight.warpCharge>0)Flight.SelectWarp(Flight.warpIndex+(wheel>0?1:-1));else followDistance=PM.Clamp(followDistance*(wheel>0?.9:1.1),100,900);}
                     if(orbit){Vector2 delta=mouse.delta.ReadValue();orbitAzimuth+=delta.x*.005;orbitElevation=PM.Clamp(orbitElevation-delta.y*.005,-1.3,1.3);}else{orbitAzimuth*=Math.Exp(-Time.unscaledDeltaTime*3);orbitElevation=PM.Mix(orbitElevation,.22,1-Math.Exp(-Time.unscaledDeltaTime*3));}
                 }
-                long simulationStart=System.Diagnostics.Stopwatch.GetTimestamp();accumulator+=Time.unscaledDeltaTime;int steps=Math.Min(6,(int)(accumulator*60));accumulator%=1.0/60;for(int i=0;i<steps;i++)Flight.Step(1.0/60);lastSimulationMs=(System.Diagnostics.Stopwatch.GetTimestamp()-simulationStart)*1000.0/System.Diagnostics.Stopwatch.Frequency;
+                long simulationStart=System.Diagnostics.Stopwatch.GetTimestamp();accumulator+=Time.unscaledDeltaTime;int steps=Math.Min(6,(int)(accumulator*60));accumulator%=1.0/60;for(int i=0;i<steps;i++){BeforeSimulationStep?.Invoke(Flight);Flight.Step(1.0/60);}lastSimulationMs=(System.Diagnostics.Stopwatch.GetTimestamp()-simulationStart)*1000.0/System.Diagnostics.Stopwatch.Frequency;
                 // Interpolated presentation never changes physics or terrain coordinates.
                 double alpha=accumulator*60;var position=Flight.previousPosition+(Flight.position-Flight.previousPosition)*alpha;var forward=(Flight.previousForward+(Flight.forward-Flight.previousForward)*alpha).Unit;var up=position.Unit;var right=D3.Cross(forward,up).Unit;
                 if(cockpit){CameraPosition=position+forward*42+up*9;Camera.transform.rotation=Quaternion.LookRotation(Coordinates.Float(forward),Coordinates.Float(up));}

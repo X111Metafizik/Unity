@@ -30,3 +30,11 @@ tools/compile-unity/obj/
 /evidence/planet-port/editor/
 .DS_Store
 Thumbs.db
+/evidence/performance/**/*.raw
+/evidence/performance/**/*.log
+/evidence/performance/**/frames.json
+/evidence/performance/before-1/
+/evidence/performance/before-2/
+# Exploratory captures with a second player open are excluded from final A/B.
+/evidence/performance/baseline/
+/evidence/performance/optimized-1/

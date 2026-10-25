@@ -40,6 +40,7 @@ namespace Ladir.Editor
             GraphicsSettings.defaultRenderPipeline=pipeline;QualitySettings.renderPipeline=pipeline;
             var panel=AssetDatabase.LoadAssetAtPath<PanelSettings>(Generated+"/Panel.asset");if(!panel){panel=ScriptableObject.CreateInstance<PanelSettings>();AssetDatabase.CreateAsset(panel,Generated+"/Panel.asset");}panel.scaleMode=PanelScaleMode.ScaleWithScreenSize;panel.referenceResolution=new Vector2Int(1440,1000);panel.screenMatchMode=PanelScreenMatchMode.MatchWidthOrHeight;panel.match=.5f;panel.sortingOrder=10;EditorUtility.SetDirty(panel);
             panel.themeStyleSheet=AssetDatabase.LoadAssetAtPath<ThemeStyleSheet>("Assets/Ladir/Planet/Ladir.tss");EditorUtility.SetDirty(panel);
+            var hudFont=PlanetFontBake.Prepare(panel);
             bool dirty=false;for(int i=0;i<SceneManager.sceneCount;i++)dirty|=SceneManager.GetSceneAt(i).isDirty;var old=SceneManager.GetActiveScene();
             var scene=SceneManager.GetSceneByPath(ScenePath);bool wasLoaded=scene.IsValid()&&scene.isLoaded;
             if(wasLoaded&&scene.isDirty)throw new InvalidOperationException("Planet Studio sahnesinde kaydedilmemiş değişiklikler var; otomatik kurulum bunları değiştirmedi.");
@@ -50,6 +51,7 @@ namespace Ladir.Editor
             if(!app.GetComponent<PlanetPortSmoke>())app.gameObject.AddComponent<PlanetPortSmoke>();EditorSceneManager.MarkSceneDirty(scene);EditorSceneManager.SaveScene(scene,ScenePath);
             app.vegetationGeometry=AssetDatabase.LoadAssetAtPath<TextAsset>("Assets/Ladir/Source/Vegetation.bytes");app.volumeNoise=AssetDatabase.LoadAssetAtPath<TextAsset>("Assets/Ladir/Source/VolumeNoise.bytes");EditorSceneManager.MarkSceneDirty(scene);EditorSceneManager.SaveScene(scene,ScenePath);
             app.oceanCompute=AssetDatabase.LoadAssetAtPath<ComputeShader>("Assets/Ladir/Shaders/Ocean.compute");EditorSceneManager.MarkSceneDirty(scene);EditorSceneManager.SaveScene(scene,ScenePath);
+            app.hudFont=hudFont;EditorSceneManager.MarkSceneDirty(scene);EditorSceneManager.SaveScene(scene,ScenePath);
             if(!wasLoaded){EditorSceneManager.CloseScene(scene,true);if(old.IsValid())SceneManager.SetActiveScene(old);}
             if(!dirty||Application.isBatchMode)EditorSceneManager.OpenScene(ScenePath,OpenSceneMode.Single);
             EditorBuildSettings.scenes=new[]{new EditorBuildSettingsScene(ScenePath,true),new EditorBuildSettingsScene("Assets/Ladir/Scenes/ReferenceFlight.unity",false)};

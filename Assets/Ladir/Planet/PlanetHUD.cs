@@ -20,6 +20,7 @@ namespace Ladir.Planet
         public void Initialize(PlanetStudio studio,PanelSettings settings,StyleSheet style)
         {
             app=studio;var doc=gameObject.AddComponent<UIDocument>();doc.panelSettings=settings;root=doc.rootVisualElement;if(style)root.styleSheets.Add(style);root.name="ladir";root.pickingMode=PickingMode.Ignore;
+            if(studio.hudFont)root.style.unityFontDefinition=FontDefinition.FromSDFFont(studio.hudFont);
             bar=Box(root,"topbar");Label(bar,"◉","planet-mark");var brand=Box(bar,"brand");Label(brand,"LADİR","brand-name");Label(brand,"PLANET STUDIO","eyebrow");
             var modes=Box(bar,"mode-switch");Button(modes,"Editör",()=>app.ExitFlight());Button(modes,"✧ Uçuş modu",()=>app.StartFlight());Button(modes,"Havza incele",()=>reference.Open());var spacer=Box(bar,"spacer");caption=Label(spacer,"LUMEN–742","seed-caption");Button(bar,"↥ Aç",Open);Button(bar,"↓ .planet",Save);Button(bar,"◎",()=>app.Screenshot());
             editor=Box(root,"editor");editor.pickingMode=PickingMode.Ignore;var views=Box(editor,"views");string[] viewNames={"Yörünge  1","Bölge  2","Yüzey  3","Harita  4"};for(int i=0;i<4;i++){int j=i;Button(views,viewNames[i],()=>app.SetView(j));}

@@ -25,6 +25,15 @@ namespace Ladir.Planet
     [Serializable] public class Crossing { public string id,name,riverId,portalId;public double riverT,widthMeters;public double[] direction;public double[][] anchors; }
     [Serializable] public class Strait {public string id,name;public double[] direction,entrance,exit;public double[][] centerline;public double minimumDepthMeters,minimumWidthMeters;}
     [Serializable] public class Landmark { public string id,name;public double[] direction;public double rangeMeters=10000,tilt=1; }
+    [Serializable] public class WorldBufferDescriptor
+    {
+        [JsonProperty(Required=Required.Always)] public string name;
+        [JsonProperty(Required=Required.Always)] public string type;
+        [JsonProperty(Required=Required.Always)] public int length;
+        [JsonProperty(Required=Required.Always)] public int byteLength;
+        [JsonProperty(Required=Required.Always)] public int offset;
+    }
+    [Serializable] public class WorldManifest {public int schemaVersion;public string generatorVersion,generatorBuildHash;public double radiusMeters;public WorldBufferDescriptor[] bufferDescriptors;}
     [Serializable] public class PlanetWorld
     {
         public double radiusMeters;public uint terrainSeed,climateSeed,vegetationSeed;public double[] ridgeAxis;
@@ -32,7 +41,13 @@ namespace Ladir.Planet
         [JsonIgnore] public ushort[] Stamps;
         [JsonIgnore] public float[] Erosion;
         [JsonIgnore] public uint[] FaceNodes;
-        [JsonIgnore] public JObject Metadata;
+        public WorldManifest manifest;public JObject appearanceConfig;
+        string metadataJson;JObject metadata;readonly object metadataGate=new object();
+        // A 7 MB hydrology header used to become a large JToken graph AND a
+        // second typed object graph during every load. Runtime reads typed data
+        // directly. Preserve the untouched header for lossless later save/edit.
+        [JsonIgnore] public JObject Metadata
+        {get{lock(metadataGate)return metadata??(metadata=JObject.Parse(metadataJson));}set{lock(metadataGate){metadata=value;metadataJson=null;}}}
         [JsonIgnore] public Dictionary<string,byte[]> Buffers=new Dictionary<string,byte[]>();
         [JsonIgnore] public string Identity;
         [JsonIgnore] public D3 Center=>new D3(frame.center);
@@ -47,19 +62,20 @@ namespace Ladir.Planet
             var bytes=File.ReadAllBytes(path);if(bytes.Length<16||Encoding.ASCII.GetString(bytes,0,8)!="PLANET01")throw new InvalidDataException("Geçerli PLANET01 paketi gerekli.");
             int len=BitConverter.ToInt32(bytes,8),start=BitConverter.ToInt32(bytes,12);
             if(len<2||len>bytes.Length-16||start<16+len||start>bytes.Length)throw new InvalidDataException("Paket üstbilgisi bozuk.");
-            var root=JObject.Parse(new UTF8Encoding(false,true).GetString(bytes,16,len));
-            if((int?)root["manifest"]?["schemaVersion"]!=1)throw new InvalidDataException("Bilinmeyen dünya şeması.");
-            var w=root.ToObject<PlanetWorld>();w.Metadata=root;
+            var json=new UTF8Encoding(false,true).GetString(bytes,16,len);
+            var w=JsonConvert.DeserializeObject<PlanetWorld>(json,new JsonSerializerSettings{ObjectCreationHandling=ObjectCreationHandling.Replace});
+            if(w?.manifest?.schemaVersion!=1)throw new InvalidDataException("Bilinmeyen dünya şeması.");w.metadataJson=json;
             if(w.radiusMeters<10000||w.radiusMeters>1e9||w.generationConfig==null||w.frame==null||w.hydrology==null)throw new InvalidDataException("Dünya alanları eksik.");
             // Never reinterpret a legacy world's terrain model or radius.
-            var version=(string)root["manifest"]?["generatorVersion"];
+            var version=w.manifest.generatorVersion;
             if(version!="1.8.1"&&version!="1.8.0")throw new InvalidDataException("Bu Unity portu yalnız 1.8.0 / 1.8.1 dünya paketlerini destekler; eski paket dönüştürülmedi.");
-            var build=(string)root["manifest"]?["generatorBuildHash"];if(build!=(version=="1.8.1"?"c1e6340e175ecf40c8a03c74ab8f29e7f1a66c27520f6becb64f64667e97e0ca":"264fe0af577151a24b686c4696567a787f6ec4002eb89431f27efe5f70e9310d"))throw new InvalidDataException("Üretim çekirdeği imzası farklı; dünya sessizce değiştirilmedi.");
+            var build=w.manifest.generatorBuildHash;if(build!=(version=="1.8.1"?"c1e6340e175ecf40c8a03c74ab8f29e7f1a66c27520f6becb64f64667e97e0ca":"264fe0af577151a24b686c4696567a787f6ec4002eb89431f27efe5f70e9310d"))throw new InvalidDataException("Üretim çekirdeği imzası farklı; dünya sessizce değiştirilmedi.");
             if(w.generationConfig.terrainStamps>0&&w.generationConfig.stampLayers<2)throw new InvalidDataException("Tek katmanlı eski stamp dünyası için açık dönüştürme gerekli.");
-            if(w.radiusMeters!=w.generationConfig.radiusMeters||(double?)root["manifest"]?["radiusMeters"]!=w.radiusMeters)throw new InvalidDataException("Dünya yarıçapı alanları uyuşmuyor.");
-            long last=0;foreach(var a in (JArray)root["manifest"]["bufferDescriptors"])
+            if(w.radiusMeters!=w.generationConfig.radiusMeters||w.manifest.radiusMeters!=w.radiusMeters)throw new InvalidDataException("Dünya yarıçapı alanları uyuşmuyor.");
+            if(w.manifest.bufferDescriptors==null)throw new InvalidDataException("Paket tampon tanımları eksik.");
+            long last=0;foreach(var a in w.manifest.bufferDescriptors)
             {
-                string name=(string)a["name"],type=(string)a["type"];int n=(int)a["length"],count=(int)a["byteLength"],offset=(int)a["offset"];
+                string name=a.name,type=a.type;int n=a.length,count=a.byteLength,offset=a.offset;
                 int size=type=="Float64Array"?8:type=="Uint8Array"?1:type=="Float32Array"||type=="Uint32Array"||type=="Int32Array"?4:0;
                 if(size==0||n<0||count!=(long)n*size||offset<last||(long)start+offset+count>bytes.Length||w.Buffers.ContainsKey(name))throw new InvalidDataException("Paket sayısal alanı bozuk.");
                 var data=new byte[count];Buffer.BlockCopy(bytes,start+offset,data,0,count);w.Buffers.Add(name,data);last=(long)offset+count;
