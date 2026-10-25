@@ -37,23 +37,26 @@ namespace Ladir.Planet
         {
             int rate=22050,n=(int)(rate*duration);var data=new float[n];uint seed=13;for(int i=0;i<n;i++){seed=seed*1664525+1013904223;float t=i/(float)rate,envelope=duration>1?1:Mathf.Exp(-t*7);data[i]=(Mathf.Sin(t*frequency*Mathf.PI*2*(1-t*.2f))*.5f+((seed>>8)/16777216f-.5f)*noise)*envelope*.35f;}var clip=AudioClip.Create("LADIR synthesized audio",n,1,rate,false);clip.SetData(data,0);return clip;
         }
+        ColorAdjustments exposure;
         public void PlayShot(bool missile){if(app.Sound)shotAudio.PlayOneShot(missile?missileClip:gunClip,missile?.28f:.12f);}
         public void ResetFlight(){travel=0;for(int i=0;i<burstLife.Length;i++)burstLife[i]=0;}
         void LateUpdate()
         {
-            if(app==null)return;var f=app.Flight;bool active=app.Flying&&f!=null;engineAudio.mute=!app.Sound||!active;
+            if(app==null)return;if(exposure==null){exposure=volume.profile.Add<ColorAdjustments>();exposure.postExposure.Override(0);}exposure.postExposure.value=Mathf.Log(Mathf.Max(.01f,app.exposure),2);var f=app.Flight;bool active=app.Flying&&f!=null;engineAudio.mute=!app.Sound||!active;
             for(int i=0;i<enemies.Length;i++){enemies[i].gameObject.SetActive(active&&f.enemies[i].health>0&&(f.enemies[i].position-f.position).Length<15000);if(active){var e=f.enemies[i];enemies[i].position=Coordinates.Float(e.position-app.Origin);enemies[i].rotation=Quaternion.LookRotation(Coordinates.Float(e.forward),Coordinates.Float(e.position.Unit));}}
-            if(!active){tube.gameObject.SetActive(false);wave.gameObject.SetActive(false);Array.Clear(positions,0,positions.Length);lines.vertices=positions;return;}
+            if(!active){tube.gameObject.SetActive(false);wave.gameObject.SetActive(false);aberration.intensity.value=0;blur.intensity.value=0;boostAmount=0;Array.Clear(positions,0,positions.Length);lines.vertices=positions;return;}
             float dt=Time.unscaledDeltaTime;boostAmount=Mathf.Lerp(boostAmount,f.boosting?1:0,1-Mathf.Exp(-dt*5));aberration.intensity.value=boostAmount*.22f;blur.intensity.value=boostAmount*.18f;app.Camera.fieldOfView=Mathf.Lerp(app.Camera.fieldOfView,64+boostAmount*9,1-Mathf.Exp(-dt*5));engineAudio.pitch=.7f+(float)Math.Min(1,f.speed/500)*.8f;engineAudio.volume=f.state=="landed"?.025f:.12f;
             foreach(var ps in engines){var emission=ps.emission;emission.enabled=f.state!="landed"&&f.state!="crashed";var main=ps.main;main.startSpeed=(float)(f.boosting?150:85);main.startSize=f.boosting?3:2.5f;}
             for(int i=0;i<lights.Length;i++)lights[i].gameObject.SetActive(f.health>0&&(i>1||Math.Sin(f.time*5+i)>-.7));
-            if(!f.paused)travel+=f.speed*dt;D3 origin=f.position-app.Origin;
+            // Effects share the interpolated render pose. During warp the next
+            // physics sample can be kilometres ahead of the visible ship.
+            if(!f.paused)travel+=f.speed*dt;D3 origin=Coordinates.Double(ship.position);
             for(int i=0;i<112;i++){double a=i*2.399963,r=85+(i*73)%149,z=((i*127.43-travel)%950+950)%950-400;D3 p=origin+f.right*(Math.Cos(a)*r)+f.up*(Math.Sin(a)*r)+f.forward*z;positions[i*2]=Coordinates.Float(p);positions[i*2+1]=Coordinates.Float(p-f.forward*(1.8+Math.Min(1,f.speed/500)*18));var c=new Color(.65f,.86f,.90f,(float)(f.state=="flying"?.055+Math.Min(1,f.speed/500)*.19:0));colors[i*2]=colors[i*2+1]=c;}
             for(int i=0;i<128;i++){var p=f.projectiles[i];int j=(112+i)*2;positions[j]=Coordinates.Float(p.position-app.Origin);positions[j+1]=Coordinates.Float(p.position-app.Origin-p.direction*(p.missile?24:38));colors[j]=colors[j+1]=p.life<=0?Color.clear:p.enemy?new Color(3,.35f,.12f,1):p.missile?new Color(3,1.2f,.25f,1):new Color(.4f,2,3,1);}
             lines.vertices=positions;lines.colors=colors;
             for(int i=0;i<bursts.Length;i++){var e=f.explosions[i];if(e.life>burstLife[i]){bursts[i].transform.position=Coordinates.Float(e.position-app.Origin);var main=bursts[i].main;main.startSpeed=e.impact?35:140;main.startSize=e.impact?4:22;bursts[i].Emit(e.impact?20:85);if(app.Sound)shotAudio.PlayOneShot(explosionClip,(float)(.4/(1+(e.position-f.position).Length/300)));}else if(e.life>0)bursts[i].transform.position=Coordinates.Float(e.position-app.Origin);burstLife[i]=e.life;}
-            bool warping=f.state=="warping";tube.gameObject.SetActive(warping);wave.gameObject.SetActive(f.warpCharge>0);Quaternion rot=Quaternion.LookRotation(Coordinates.Float(f.forward),Coordinates.Float(f.up));tube.position=Coordinates.Float(origin);tube.rotation=rot;wave.position=tube.position;wave.rotation=rot;wave.localScale=new Vector3(1,1,.02f+(float)(1-f.warpCharge/3)*.08f);Shader.SetGlobalFloat("_LadirWarp",warping?1:0);Shader.SetGlobalFloat("_LadirWarpTime",(float)f.time);
+            bool warping=f.state=="warping";tube.gameObject.SetActive(warping);wave.gameObject.SetActive(f.warpCharge>0);tube.position=ship.position;tube.rotation=ship.rotation;wave.position=tube.position;wave.rotation=tube.rotation;wave.localScale=new Vector3(1,1,.02f+(float)(1-f.warpCharge/3)*.08f);Shader.SetGlobalFloat("_LadirWarp",warping?1:0);Shader.SetGlobalFloat("_LadirWarpTime",(float)f.time);
         }
-        void OnDestroy(){if(lines)Destroy(lines);if(lineMaterial)Destroy(lineMaterial);if(gunClip)Destroy(gunClip);if(missileClip)Destroy(missileClip);if(explosionClip)Destroy(explosionClip);}
+        void OnDestroy(){if(lines)Destroy(lines);if(lineMaterial)Destroy(lineMaterial);if(gunClip)Destroy(gunClip);if(missileClip)Destroy(missileClip);if(explosionClip)Destroy(explosionClip);if(engineAudio&&engineAudio.clip)Destroy(engineAudio.clip);foreach(var e in enemies)if(e)Destroy(e.gameObject);foreach(var p in bursts)if(p)Destroy(p.gameObject);if(tube){Destroy(tube.GetComponent<MeshFilter>().sharedMesh);Destroy(tube.gameObject);}if(wave){Destroy(wave.GetComponent<MeshFilter>().sharedMesh);Destroy(wave.gameObject);}if(volume){Destroy(volume.profile);Destroy(volume.gameObject);}}
     }
 }

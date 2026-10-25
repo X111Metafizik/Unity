@@ -20,6 +20,13 @@ tools/compile-unity/obj/
 /evidence/unity-v1/*.log
 /evidence/unity-v1/run1/
 /evidence/planet-port/*.log
+/evidence/planet-port/**/*.log
+/evidence/planet-port/native-player-baseline/
+# Intermediate local development captures; final and visible baseline are published.
+/evidence/planet-port/native-run1/
+/evidence/planet-port/native-player-atmosphere/
+/evidence/planet-port/native-player-integrated/
+/evidence/planet-port/native-player-seams/
 /evidence/planet-port/editor/
 .DS_Store
 Thumbs.db

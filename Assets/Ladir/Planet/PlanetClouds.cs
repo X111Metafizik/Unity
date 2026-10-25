@@ -5,6 +5,7 @@ namespace Ladir.Planet
     public sealed class PlanetClouds : MonoBehaviour
     {
         PlanetStudio app;Texture3D noise;Color32[] densityBytes;Task<Color32[]> job;double skyTime,nextFlash=5,flashUntil;D3 storm;LineRenderer lightning;Material boltMaterial;AudioSource thunderAudio;AudioClip thunder;
+        Texture2D transmittance;Task<Color[]> transJob;double lutRadius;
         public void Initialize(PlanetStudio studio,Material unused)
         {
             app=studio;var bytes=studio.volumeNoise.bytes;job=Task.Run(()=>{const int N=64;var data=new Color32[N*N*N];for(int i=0;i<data.Length;i++)data[i]=new Color32(bytes[i*4],bytes[i*4+1],bytes[i*4+2],bytes[i*4+3]);return data;});
@@ -13,7 +14,9 @@ namespace Ladir.Planet
         void Update()
         {
             if(job!=null&&job.IsCompleted){densityBytes=job.Result;noise=new Texture3D(64,64,64,TextureFormat.RGBA32,false){wrapMode=TextureWrapMode.Repeat,filterMode=FilterMode.Trilinear};noise.SetPixels32(densityBytes);noise.Apply(false,true);Shader.SetGlobalTexture("_LadirNoise3D",noise);job=null;}
-            if(app.Kernel==null||!noise)return;if(!app.pausedSky)skyTime+=Time.unscaledDeltaTime;
+            if(app.Kernel==null||!noise)return;if(!app.pausedSky)skyTime+=Time.unscaledDeltaTime*app.wind/.6;
+            if(lutRadius!=app.Kernel.World.radiusMeters&&transJob==null){lutRadius=app.Kernel.World.radiusMeters;double radius=lutRadius*.001;transJob=Task.Run(()=>MakeTransmittance(radius));}
+            if(transJob!=null&&transJob.IsCompleted){var data=transJob.Result;if(transmittance)Destroy(transmittance);transmittance=new Texture2D(256,64,TextureFormat.RGBAHalf,false,true){name="Original atmosphere optical depth LUT",filterMode=FilterMode.Bilinear,wrapMode=TextureWrapMode.Clamp};transmittance.SetPixels(data);transmittance.Apply(false,true);Shader.SetGlobalTexture("_LadirTransmittance",transmittance);transJob=null;}
             double altitude=app.CameraPosition.Length-app.Kernel.World.radiusMeters;float fade=1-(float)PM.Smooth(30000,38000,altitude);Shader.SetGlobalVector("_LadirWeather",new Vector4(app.clouds*fade,(float)skyTime,app.atmosphere,(float)app.Kernel.World.radiusMeters));
             if(skyTime>nextFlash&&app.clouds*fade>.15f&&altitude<25000)
             {
@@ -37,6 +40,17 @@ namespace Ladir.Planet
             var p=physical/1000;double h=physical.Length-app.Kernel.World.radiusMeters;double layer=PM.Smooth(2000,3000,h)*(1-PM.Smooth(9000,12000,h));D3 drift=new D3(skyTime*.0001,0,skyTime*.00006),shape=p*.022+drift;
             return PM.Smooth(.68-coverage*.30,.82-coverage*.30,Noise(p*.001+drift*.1)*.35+Noise(shape)*.90-Noise(shape,true)*.12)*layer;
         }
-        void OnDestroy(){if(noise)Destroy(noise);if(boltMaterial)Destroy(boltMaterial);if(thunder)Destroy(thunder);}
+        static Color[] MakeTransmittance(double radius)
+        {
+            var data=new Color[256*64];
+            for(int y=0;y<64;y++)for(int x=0;x<256;x++)
+            {
+                double h=(y+.5)/64*100,r=radius+h,mu=(x+.5)/256*2-1,b=r*mu,outer=-b+System.Math.Sqrt(b*b+(radius+100)*(radius+100)-r*r),disc=b*b-r*r+radius*radius,ray=0,mie=0,step=outer/48;
+                bool blocked=disc>0&&-b-System.Math.Sqrt(disc)>0;if(!blocked)for(int j=0;j<48;j++){double t=(j+.5)*step,alt=System.Math.Max(0,System.Math.Sqrt(r*r+t*t+2*r*mu*t)-radius);ray+=System.Math.Exp(-alt/8)*step;mie+=System.Math.Exp(-alt/1.2)*step;}
+                data[y*256+x]=blocked?new Color(0,0,0,1):new Color((float)System.Math.Exp(-.0036*ray-.008*mie),(float)System.Math.Exp(-.008*ray-.008*mie),(float)System.Math.Exp(-.018*ray-.008*mie),1);
+            }
+            return data;
+        }
+        void OnDestroy(){if(noise)Destroy(noise);if(transmittance)Destroy(transmittance);if(boltMaterial)Destroy(boltMaterial);if(thunder)Destroy(thunder);}
     }
 }

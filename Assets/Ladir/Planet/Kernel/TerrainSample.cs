@@ -5,6 +5,15 @@ namespace Ladir.Planet
 {
     public sealed partial class TerrainKernel
     {
+        // Spatial river index already built once when the world loads. This
+        // query does not generate terrain and is safe for the LOD planner.
+        public double WaterFeatureCell(D3 d,double patchRadius)
+        {
+            double cell=double.PositiveInfinity;var stream=rivers.Network(d);
+            if(stream.HasValue&&stream.Value.distance<patchRadius+stream.Value.width*.5)cell=Math.Max(8,stream.Value.width/5);
+            var p=World.Local(d);if(p.z>.3){foreach(var river in World.hydrology.rivers)if(!river.network&&p.y<river.startY+(patchRadius+1000)/R&&p.y>river.endY-(patchRadius+1000)/R){var r=rivers.Local(river,p.x,p.y);if(r.distance<patchRadius+r.width*.5)cell=Math.Min(cell,Math.Max(8,r.width/5));}foreach(var lake in World.hydrology.lakes){double distance=Hypot(p.x-lake.x,p.y-lake.y)*R;if(Math.Abs(distance-lake.radiusMeters)<patchRadius+lake.radiusMeters*.2)cell=Math.Min(cell,Math.Max(12,lake.radiusMeters/48));}}
+            return cell;
+        }
         public SurfaceSample Sample(D3 d,bool micro=true)
         {
             var geo=World.Dry?Geology(d):(0.0,0.0,1.0);double h=World.Dry?geo.Item1:Base(d),water=World.Dry?-100000:C.seaLevel,protect=0,flow=0,riverDistance=1e12;string feature=null;var p=World.Local(d);

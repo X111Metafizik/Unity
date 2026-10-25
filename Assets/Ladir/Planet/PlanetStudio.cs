@@ -14,6 +14,7 @@ namespace Ladir.Planet
     {
         public Mesh shipMesh;public Material shipMaterial,terrainMaterial,waterMaterial,thrusterMaterial,lightMaterial,cloudMaterial,warpMaterial,skyMaterial,lineMaterial,vegetationMaterial;
         public Texture2D rockTexture;
+        public ComputeShader oceanCompute;
         public TextAsset vegetationGeometry,volumeNoise;
         public UnityEngine.UIElements.PanelSettings panelSettings;public UnityEngine.UIElements.StyleSheet styleSheet;
         public PlanetTerrain Terrain {get;private set;}public TerrainKernel Kernel{get;private set;}public FlightModel Flight{get;private set;}
@@ -23,7 +24,9 @@ namespace Ladir.Planet
         public string SelectedFeature;public D3 LightAnchor;double lastClick=-10;
         public double range=18000,orbitYaw=0,orbitTilt=.85,editorHeight;
         public float sensitivity=1,sunAzimuth=35,sunElevation=42,exposure=1.1f,clouds=.22f,atmosphere=.45f,fog=.1f,tintOpacity=.28f;
+        public float waterDetail=1,wind=.6f;public int volumeSteps=32;
         public int tintMode,inspectLayer;public bool pausedSky;
+        public double lastSimulationMs,lastControllerMs;
         Transform ship;PlanetEffects effects;PlanetVegetation vegetation;PlanetClouds cloudRenderer;Material sky;
         double accumulator,followDistance=255,orbitAzimuth,orbitElevation=.22,lastA=-10,lastD=-10;bool cockpit;float nextHud;D3 spawn;
         string currentPath;int loadTicket;Task<TerrainKernel> loading;
@@ -42,6 +45,7 @@ namespace Ladir.Planet
             gameObject.AddComponent<PlanetHydrologyOverlay>().Initialize(this);
             Routes=gameObject.AddComponent<PlanetRoutePreview>();Routes.Initialize(this);
             cloudRenderer=gameObject.AddComponent<PlanetClouds>();cloudRenderer.Initialize(this,cloudMaterial);
+            gameObject.AddComponent<PlanetOcean>().Initialize(this,oceanCompute);
             Hud=gameObject.AddComponent<PlanetHUD>();Hud.Initialize(this,panelSettings,styleSheet);
             await Load(Path.Combine(Application.streamingAssetsPath,"Ladir/planet/river-v42.planet"));
         }
@@ -59,9 +63,9 @@ namespace Ladir.Planet
             }
             catch(Exception e){Status="Dünya açılamadı: "+e.Message;Debug.LogException(e);}finally{if(ticket==loadTicket)Busy=false;}
         }
-        void ApplyAppearance(JObject a)
-        {if(a==null)return;if(a["lightAnchor"] is JArray anchor)LightAnchor=new D3(anchor.ToObject<double[]>());sunAzimuth=(float?)a["sunAzimuth"]??35;sunElevation=(float?)a["sunElevation"]??42;exposure=(float?)a["exposure"]??1.1f;clouds=(float?)a["clouds"]??.22f;atmosphere=(float?)a["atmosphere"]??.45f;fog=(float?)a["fog"]??.1f;tintMode=(int?)a["tintMode"]??0;tintOpacity=(float?)a["tintOpacity"]??.28f;}
-        public JObject Appearance()=>new JObject{{"lightAnchor",new JArray(LightAnchor.Array())},{"sunAzimuth",sunAzimuth},{"sunElevation",sunElevation},{"exposure",exposure},{"clouds",clouds},{"atmosphere",atmosphere},{"fog",fog},{"tintMode",tintMode},{"tintOpacity",tintOpacity}};
+        public void ApplyAppearance(JObject a)
+        {if(a==null)return;waterDetail=(float?)a["water"]??1;wind=(float?)a["wind"]??.6f;pausedSky=(bool?)a["paused"]??false;if(a["lightAnchor"] is JArray anchor)LightAnchor=new D3(anchor.ToObject<double[]>());sunAzimuth=(float?)a["sunAzimuth"]??35;sunElevation=(float?)a["sunElevation"]??42;exposure=(float?)a["exposure"]??1.1f;clouds=(float?)a["clouds"]??.22f;atmosphere=(float?)a["atmosphere"]??.45f;fog=(float?)a["fog"]??.1f;tintMode=(int?)a["tintMode"]??0;tintOpacity=(float?)a["tintOpacity"]??.28f;}
+        public JObject Appearance()=>new JObject{{"lightAnchor",new JArray(LightAnchor.Array())},{"sunAzimuth",sunAzimuth},{"sunElevation",sunElevation},{"exposure",exposure},{"clouds",clouds},{"atmosphere",atmosphere},{"fog",fog},{"water",waterDetail},{"wind",wind},{"paused",pausedSky},{"tintMode",tintMode},{"tintOpacity",tintOpacity}};
         public void Save(string path)
         {try{Kernel.World.Save(path,Appearance());Status="Kaydedildi: "+path;}catch(Exception e){Status="Kayıt başarısız: "+e.Message;}}
         public async void Generate(PlanetConfig config)
@@ -83,6 +87,7 @@ namespace Ladir.Planet
         public void Visit(D3 direction,double distance=10000){Focus=direction.Unit;LightAnchor=Focus;range=distance;orbitTilt=.85;}
         void Update()
         {
+            long updateStart=System.Diagnostics.Stopwatch.GetTimestamp();lastSimulationMs=0;
             if(Kernel==null){Hud?.Tick();return;}var mouse=Mouse.current;var keyboard=Keyboard.current;
             if(keyboard!=null&&keyboard.hKey.wasPressedThisFrame){clean=!clean;Hud.SetClean(clean);}
             bool orbit=false;
@@ -99,7 +104,7 @@ namespace Ladir.Planet
                     float wheel=mouse?.scroll.ReadValue().y??0;if(wheel!=0&&!PointerOverUI){if(Flight.warpCharge>0)Flight.SelectWarp(Flight.warpIndex+(wheel>0?1:-1));else followDistance=PM.Clamp(followDistance*(wheel>0?.9:1.1),100,900);}
                     if(orbit){Vector2 delta=mouse.delta.ReadValue();orbitAzimuth+=delta.x*.005;orbitElevation=PM.Clamp(orbitElevation-delta.y*.005,-1.3,1.3);}else{orbitAzimuth*=Math.Exp(-Time.unscaledDeltaTime*3);orbitElevation=PM.Mix(orbitElevation,.22,1-Math.Exp(-Time.unscaledDeltaTime*3));}
                 }
-                accumulator+=Time.unscaledDeltaTime;int steps=Math.Min(6,(int)(accumulator*60));accumulator%=1.0/60;for(int i=0;i<steps;i++)Flight.Step(1.0/60);
+                long simulationStart=System.Diagnostics.Stopwatch.GetTimestamp();accumulator+=Time.unscaledDeltaTime;int steps=Math.Min(6,(int)(accumulator*60));accumulator%=1.0/60;for(int i=0;i<steps;i++)Flight.Step(1.0/60);lastSimulationMs=(System.Diagnostics.Stopwatch.GetTimestamp()-simulationStart)*1000.0/System.Diagnostics.Stopwatch.Frequency;
                 // Interpolated presentation never changes physics or terrain coordinates.
                 double alpha=accumulator*60;var position=Flight.previousPosition+(Flight.position-Flight.previousPosition)*alpha;var forward=(Flight.previousForward+(Flight.forward-Flight.previousForward)*alpha).Unit;var up=position.Unit;var right=D3.Cross(forward,up).Unit;
                 if(cockpit){CameraPosition=position+forward*42+up*9;Camera.transform.rotation=Quaternion.LookRotation(Coordinates.Float(forward),Coordinates.Float(up));}
@@ -124,12 +129,16 @@ namespace Ladir.Planet
                 Terrain.Observer=CameraPosition;Terrain.Forward=Coordinates.Double(Camera.transform.forward);Terrain.Predicted=range>2000&&range<40000?Focus*(Kernel.World.radiusMeters+editorHeight+320):CameraPosition;
             }
             Camera.transform.position=Coordinates.Float(CameraPosition-Origin);Camera.nearClipPlane=Flying?.5f:(float)Math.Max(.5,range*.00002);Camera.farClipPlane=(float)Math.Min(Kernel.World.radiusMeters*30,Math.Max(150000,(CameraPosition.Length-Kernel.World.radiusMeters)*4+Math.Sqrt(Math.Max(0,CameraPosition.Length*CameraPosition.Length-Kernel.World.radiusMeters*Kernel.World.radiusMeters))*2));
-            double altitude=Math.Max(0,CameraPosition.Length-Kernel.World.radiusMeters);float space=(float)PM.Smooth(30000,160000,altitude);sky.SetFloat("_AtmosphereThickness",atmosphere*1.8f*(1-space));sky.SetFloat("_Exposure",exposure);RenderSettings.fog=space<1&&fog>0;RenderSettings.fogMode=FogMode.ExponentialSquared;RenderSettings.fogColor=new Color(.53f,.68f,.78f);RenderSettings.fogDensity=.00035f*fog*(1-space);
+            double altitude=Math.Max(0,CameraPosition.Length-Kernel.World.radiusMeters);sky.SetFloat("_Exposure",exposure);RenderSettings.fog=false;
+            Shader.SetGlobalVector("_LadirAir",new Vector4(atmosphere,fog,volumeSteps,0));Shader.SetGlobalFloat("_LadirWorldVersion",loadTicket);
+            // 640 m FFT period must survive floating-origin rebases exactly.
+            Shader.SetGlobalVector("_LadirWaveOrigin",new Vector4((float)(-Origin.x%640),(float)(Origin.y%640),(float)(Origin.z%640),0));Shader.SetGlobalFloat("_LadirWaterGain",waterDetail);
             D3 localUp=LightAnchor.Length>.5?LightAnchor:Kernel.World.Center,northSun=FlightModel.North(localUp),eastSun=D3.Cross(northSun,localUp).Unit;double az=sunAzimuth*Math.PI/180,el=sunElevation*Math.PI/180;D3 sun=(localUp*Math.Sin(el)+(northSun*Math.Cos(az)+eastSun*Math.Sin(az))*Math.Cos(el)).Unit;Sun.transform.rotation=Quaternion.LookRotation(-Coordinates.Float(sun),Coordinates.Float(northSun));
             Shader.SetGlobalVector("_LadirOrigin",new Vector4((float)-Origin.x,(float)Origin.y,(float)Origin.z,(float)Kernel.World.radiusMeters));Shader.SetGlobalVector("_LadirNoiseOrigin",new Vector4((float)(-Origin.x%65536),(float)(Origin.y%65536),(float)(Origin.z%65536),0));Shader.SetGlobalFloat("_LadirTint",tintMode);Shader.SetGlobalFloat("_LadirTintOpacity",tintOpacity);Shader.SetGlobalFloat("_LadirInspect",inspectLayer);Shader.SetGlobalFloat("_LadirTactical",!Flying&&altitude>38000?1:0);
             var sunVector=Coordinates.Float(sun);Shader.SetGlobalVector("_LadirSun",new Vector4(sunVector.x,sunVector.y,sunVector.z,0));
             Shader.SetGlobalFloat("_LadirAlien",Kernel.World.generationConfig.worldType=="alien"?1:0);
             if(Time.unscaledTime>=nextHud){nextHud=Time.unscaledTime+.05f;Hud.Tick();}
+            lastControllerMs=(System.Diagnostics.Stopwatch.GetTimestamp()-updateStart)*1000.0/System.Diagnostics.Stopwatch.Frequency;
         }
         void Rebase(D3 p){Origin=new D3(Math.Floor(p.x/1024)*1024,Math.Floor(p.y/1024)*1024,Math.Floor(p.z/1024)*1024);Terrain.Origin=Origin;}
         public bool Pick(Vector2 screen,out D3 direction)

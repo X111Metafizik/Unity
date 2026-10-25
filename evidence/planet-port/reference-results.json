@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "nodes": 1089,
+  "maxHeightDifference": 1.3733369996771216E-10,
+  "maxFlowDifference": 0.0,
+  "edgeDifferences": 0,
+  "downhillErrors": 0,
+  "massError": 0.0
+}

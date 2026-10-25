@@ -1,0 +1,138 @@
+{
+  "worldFileSha256": "07e3a31e5068b59f6208fc880c1a6e2f0455b595e9475c833372625ecb2c1e3f",
+  "diameterKm": 8000,
+  "graphics": "NVIDIA GeForce GTX 1660 Ti",
+  "graphicsApi": "Direct3D11",
+  "resolution": [
+    1440,
+    1000
+  ],
+  "frames": 2188,
+  "meanFps": 91.1493808131715,
+  "longFrames50ms": 1,
+  "metrics": {
+    "frameMs": {
+      "median": 10.8401995,
+      "p95": 12.8941965,
+      "p99": 14.3523026,
+      "max": 50.6672974
+    },
+    "gpuMs": {
+      "median": 10.625024,
+      "p95": 12.38656,
+      "p99": 13.64352,
+      "max": 37.698048
+    },
+    "cpuMs": {
+      "median": 10.8402,
+      "p95": 12.8994,
+      "p99": 14.3785,
+      "max": 50.6716
+    },
+    "planMs": {
+      "median": 0,
+      "p95": 0.7855,
+      "p99": 1.1018,
+      "max": 10.9158
+    },
+    "submitMs": {
+      "median": 0.9839,
+      "p95": 1.8662,
+      "p99": 2.6449,
+      "max": 9.8214
+    },
+    "stitchMs": {
+      "median": 0,
+      "p95": 0.8416,
+      "p99": 1.3158,
+      "max": 8.2228
+    },
+    "uploadMs": {
+      "median": 0.0004,
+      "p95": 0.6968000000000001,
+      "p99": 2.1590000000000003,
+      "max": 7.817200000000001
+    },
+    "simulationMs": {
+      "median": 0.1366,
+      "p95": 0.362,
+      "p99": 0.5663,
+      "max": 6.3303
+    }
+  },
+  "fftMaxErrorMeters": 9.238719940185547e-7,
+  "seamVertices": 16709,
+  "maxSeamGapMeters": 0.008739183656871319,
+  "meshPayloadMiB": 187.86695098876953,
+  "residentPayloadEstimateMiB": 364.26599884033203,
+  "unityAllocatedMiB": 325.0341320037842,
+  "scenarios": [
+    {
+      "name": "04-cloud-boost-combat",
+      "frames": 748,
+      "p95": 12.658999301493168,
+      "p99": 14.133800752460957,
+      "max": 24.392304942011833,
+      "longFrames50ms": 0,
+      "gpuP95": 11.982848,
+      "maxQueue": 24,
+      "maxUpload": 1.5375,
+      "meshMiB": 193.46199798583984
+    },
+    {
+      "name": "05-boost-release",
+      "frames": 644,
+      "p95": 14.260699972510338,
+      "p99": 16.169097274541855,
+      "max": 27.735799551010132,
+      "longFrames50ms": 0,
+      "gpuP95": 13.782272,
+      "maxQueue": 44,
+      "maxUpload": 0.7896000000000001,
+      "meshMiB": 172.25307083129883
+    },
+    {
+      "name": "06-warp-charge",
+      "frames": 478,
+      "p95": 7.182497065514326,
+      "p99": 13.858999125659466,
+      "max": 18.76549795269966,
+      "longFrames50ms": 0,
+      "gpuP95": 5.000448,
+      "maxQueue": 95,
+      "maxUpload": 1.054,
+      "meshMiB": 172.98346328735352
+    },
+    {
+      "name": "07-warp-tunnel",
+      "frames": 593,
+      "p95": 5.264200735837221,
+      "p99": 9.615900926291943,
+      "max": 34.92330014705658,
+      "longFrames50ms": 0,
+      "gpuP95": 4.569088,
+      "maxQueue": 263,
+      "maxUpload": 4.899100000000001,
+      "meshMiB": 175.5896759033203
+    },
+    {
+      "name": "08-warp-arrival",
+      "frames": 1464,
+      "p95": 4.725297447293997,
+      "p99": 5.7234978303313255,
+      "max": 12.146598659455776,
+      "longFrames50ms": 0,
+      "gpuP95": 3.79392,
+      "maxQueue": 0,
+      "maxUpload": 0.0201,
+      "meshMiB": 175.5896759033203
+    }
+  ],
+  "errors": [],
+  "notes": [
+    "cpuFrameTime includes pipeline waits; do not add it to GPU time.",
+    "Memory values are end snapshots, not peaks or driver VRAM.",
+    "Screenshots must also be inspected; timings do not validate visual fidelity.",
+    "Five-flight-stage timings are different workloads, not a speedup comparison."
+  ]
+}

@@ -4,45 +4,50 @@ Shader "Ladir/Clouds" {
  #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
  #include "Packages/com.unity.render-pipelines.core/Runtime/Utilities/Blit.hlsl"
  #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
- TEXTURE3D(_LadirNoise3D);SAMPLER(sampler_LadirNoise3D);
+ #include "AtmosphereCommon.hlsl"
  TEXTURE2D(_LadirCloudTexture);SAMPLER(sampler_LadirCloudTexture);
- float4 _LadirWeather,_LadirOrigin,_LadirLightning;
- float noise(float3 p){return SAMPLE_TEXTURE3D_LOD(_LadirNoise3D,sampler_LadirNoise3D,p,0).r;}
- float density(float3 p){float h=length(p)-_LadirWeather.w;float layer=smoothstep(2000,3000,h)*(1-smoothstep(9000,12000,h));float3 km=float3(-p.x,p.y,p.z)/1000,drift=float3(_LadirWeather.y*.0001,0,_LadirWeather.y*.00006);float weather=noise(km*.001+drift*.1);float3 shape=SAMPLE_TEXTURE3D_LOD(_LadirNoise3D,sampler_LadirNoise3D,km*.022+drift,0).rgb;return smoothstep(.68-_LadirWeather.x*.30,.82-_LadirWeather.x*.30,weather*.35+shape.r*.90-shape.b*.12)*layer;}
- float2 sphere(float3 o,float3 d,float radius){float b=dot(o,d),c=dot(o,o)-radius*radius,h=b*b-c;if(h<0)return float2(1e20,-1e20);h=sqrt(h);return float2(-b-h,-b+h);}
+ TEXTURE2D(_LadirHistory);SAMPLER(sampler_LadirHistory);
+ TEXTURE2D(_LadirHistoryMeta);SAMPLER(sampler_LadirHistoryMeta);
+ float4 _LadirOrigin,_LadirHistoryControl;float4x4 _LadirPreviousVP;float3 _LadirCameraDelta;
  ENDHLSL
- Pass {Name "Raymarch" ZWrite Off ZTest Always Cull Off
+ Pass {Name "Atmosphere and temporal clouds" ZWrite Off ZTest Always Cull Off
+ HLSLPROGRAM
+ #pragma target 3.5
+ #pragma vertex Vert
+ #pragma fragment frag
+ struct Output {half4 color:SV_Target0;float2 metadata:SV_Target1;};
+ Output frag(Varyings i){
+  float depth=SampleSceneDepth(i.texcoord);
+  #if UNITY_REVERSED_Z
+   float farDepth=.00001;bool sky=depth<=.0000001;
+  #else
+   float farDepth=.99999;bool sky=depth>=.999999;depth=lerp(UNITY_NEAR_CLIP_VALUE,1,depth);
+  #endif
+  float3 end=ComputeWorldSpacePosition(i.texcoord,farDepth,UNITY_MATRIX_I_VP),ray=normalize(end-_WorldSpaceCameraPos),ro=(_WorldSpaceCameraPos+_LadirOrigin.xyz)*.001;
+  float3 scene=ComputeWorldSpacePosition(i.texcoord,depth,UNITY_MATRIX_I_VP);float distance=sky?1e8:length(scene-_WorldSpaceCameraPos)*.001;
+  float reference=min(distance,500);float2 shell=LadirSphere(ro,ray,_LadirWeather.w*.001+5.5);float hit=shell.x>0?shell.x:shell.y;if(hit>0)reference=min(reference,hit);
+  float4 clip=mul(_LadirPreviousVP,float4(ray*reference+_LadirCameraDelta,1));float2 uv=clip.xy/max(.000001,clip.w)*.5+.5;
+  #if UNITY_UV_STARTS_AT_TOP
+   uv.y=1-uv.y;
+  #endif
+  bool valid=_LadirHistoryControl.x>.5&&clip.w>0&&all(uv>0)&&all(uv<1);float2 old=0;
+  if(valid){old=SAMPLE_TEXTURE2D_LOD(_LadirHistoryMeta,sampler_LadirHistoryMeta,uv,0).rg;float expected=min(60000,length(ray*min(distance,60000)+_LadirCameraDelta));valid=abs(old.x-expected)<=max(.002,expected*.015)&&old.y<4;}
+  int2 tile=(int2)i.positionCS.xy/8;bool selected=(tile.x+tile.y*2)%5==(int)_LadirHistoryControl.y;bool reuse=valid&&!selected;
+  Output o;o.color=reuse?SAMPLE_TEXTURE2D_LOD(_LadirHistory,sampler_LadirHistory,uv,0):LadirVolume(ro,ray,distance);o.metadata=float2(min(distance,60000),reuse?old.y+1:0);return o;
+ }
+ ENDHLSL }
+ Pass {Name "Depth-aware composite" ZWrite Off ZTest Always Cull Off
  HLSLPROGRAM
  #pragma target 3.5
  #pragma vertex Vert
  #pragma fragment frag
  half4 frag(Varyings i):SV_Target{
-  if(_LadirWeather.x<=.001)return 0;float depth=SampleSceneDepth(i.texcoord);
-  #if UNITY_REVERSED_Z
-   float farDepth=.00001;
-  #else
-   float farDepth=.99999;depth=lerp(UNITY_NEAR_CLIP_VALUE,1,depth);
-  #endif
-  float3 end=ComputeWorldSpacePosition(i.texcoord,farDepth,UNITY_MATRIX_I_VP),ray=normalize(end-_WorldSpaceCameraPos),o=_WorldSpaceCameraPos+_LadirOrigin.xyz;
-  float3 scene=ComputeWorldSpacePosition(i.texcoord,depth,UNITY_MATRIX_I_VP);float limit=length(scene-_WorldSpaceCameraPos);
-  float2 shell=sphere(o,ray,_LadirWeather.w+12000),inner=sphere(o,ray,_LadirWeather.w+2000);float start=max(0,shell.x),stop=min(shell.y,limit);if(inner.x>start)stop=min(stop,inner.x);else if(inner.y>start)start=inner.y;
-  stop=min(stop,start+70000);if(stop<=start)return 0;float step=(stop-start)/32,trans=1;float3 color=0;
-  // Deterministic midpoint samples: no checkerboard/dither pattern and no
-  // camera-dependent random offset that crawls over the cloud silhouette.
-  [loop]for(int k=0;k<32;k++){float t=start+(k+.5)*step;float3 p=o+ray*t;float den=density(p);float alpha=1-exp(-den*step*.0012);float sunlight=.55+.45*saturate((length(p)-_LadirWeather.w-1800)/5000);float flash=_LadirLightning.w*exp(-distance(p,_LadirLightning.xyz)/1800);float3 lit=lerp(float3(.30,.39,.47),float3(.94,.97,1.0),sunlight)+float3(.5,.8,1.3)*flash*4;color+=trans*alpha*lit;trans*=1-alpha;if(trans<.02)break;}
-  return half4(color,1-trans);
+  half4 scene=SAMPLE_TEXTURE2D_X(_BlitTexture,sampler_LinearClamp,i.texcoord);float center=LinearEyeDepth(SampleSceneDepth(i.texcoord),_ZBufferParams);half4 cloud=0;float weights=0;
+  [unroll]for(int k=0;k<4;k++){float2 uv=i.texcoord+float2((k&1)?1:-1,(k&2)?1:-1)/_ScreenParams.xy;float d=LinearEyeDepth(SampleSceneDepth(uv),_ZBufferParams),w=exp(-abs(d-center)/max(8,center*.002));cloud+=SAMPLE_TEXTURE2D(_LadirCloudTexture,sampler_LadirCloudTexture,uv)*w;weights+=w;}
+  // Thin silhouettes can reject all four neighbours. Retain the center
+  // estimate instead of multiplying the scene by an empty (black) result.
+  cloud=weights>.001?cloud/weights:SAMPLE_TEXTURE2D(_LadirCloudTexture,sampler_LadirCloudTexture,i.texcoord);return half4(scene.rgb*cloud.a+cloud.rgb,scene.a);
  }
- ENDHLSL }
- Pass {Name "Composite" ZWrite Off ZTest Always Cull Off
- HLSLPROGRAM
- #pragma target 3.5
- #pragma vertex Vert
- #pragma fragment frag
-  half4 frag(Varyings i):SV_Target{
-   half4 scene=SAMPLE_TEXTURE2D_X(_BlitTexture,sampler_LinearClamp,i.texcoord);float centerDepth=LinearEyeDepth(SampleSceneDepth(i.texcoord),_ZBufferParams);half4 cloud=0;float weights=0;
-   [unroll]for(int k=0;k<4;k++){float2 offset=float2((k&1)?1:-1,(k&2)?1:-1)/_ScreenParams.xy;float2 uv=i.texcoord+offset;float depth=LinearEyeDepth(SampleSceneDepth(uv),_ZBufferParams);float weight=exp(-abs(depth-centerDepth)/max(8,centerDepth*.002));cloud+=SAMPLE_TEXTURE2D(_LadirCloudTexture,sampler_LadirCloudTexture,uv)*weight;weights+=weight;}
-   cloud/=max(.0001,weights);return half4(scene.rgb*(1-cloud.a)+cloud.rgb,scene.a);
-  }
  ENDHLSL }
  }
 }

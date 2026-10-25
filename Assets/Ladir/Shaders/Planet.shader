@@ -12,7 +12,7 @@ Shader "Ladir/Planet" {
  #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
  #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
  TEXTURE2D(_Rock);SAMPLER(sampler_Rock);
- TEXTURE3D(_LadirNoise3D);SAMPLER(sampler_LadirNoise3D);
+ #include "AtmosphereCommon.hlsl"
  float4 _LadirOrigin,_LadirNoiseOrigin;
  float _LadirTint,_LadirTintOpacity,_LadirInspect,_LadirTactical;
  struct A{float4 p:POSITION;float3 n:NORMAL;half4 c:COLOR;float2 surface:TEXCOORD0;float4 climate:TEXCOORD1;};
@@ -36,7 +36,7 @@ Shader "Ladir/Planet" {
   float region=smoothstep(.34,.62,SAMPLE_TEXTURE3D_LOD(_LadirNoise3D,sampler_LadirNoise3D,p/65536,0).g);half3 tint=_LadirTint==2?half3(.59,.075,.025):_LadirTint==3?half3(.03,.48,.42):_LadirTint==4?lerp(half3(.40,.09,.57),half3(.03,.48,.42),region):half3(.40,.09,.57);if(_LadirTint>0)base=lerp(base,tint,region*_LadirTintOpacity);
   if(_LadirInspect==1)base=half3(.48,.48,.48);if(_LadirInspect==2)base=lerp(half3(.10,.24,.31),half3(.95,.73,.35),saturate(i.surface.x/5000));if(_LadirInspect==3)base=i.c.rgb;if(_LadirInspect==4)base=lerp(base,half3(.08,.72,.8),i.climate.z*.8);if(_LadirInspect==5)base=lerp(half3(.12,.10,.09),half3(.1,.5,.65),i.climate.z);if(_LadirInspect==6)base=lerp(half3(.2,.2,.2),half3(.8,.16,.12),i.climate.z);
   if(_LadirTactical>.5){float h=i.surface.x/500,w=max(.006,fwidth(h)*1.15),contour=1-smoothstep(w,w*2.4,abs(frac(h+.5)-.5));base=lerp(lerp(base,half3(.11,.23,.25),.18),half3(.12,.48,.46),contour*.45);}
-  Light sun=GetMainLight(TransformWorldToShadowCoord(i.w));half3 lit=base*(SampleSH(n)*.85+sun.color*saturate(dot(n,sun.direction))*sun.shadowAttenuation);lit+=half3(2.8,.24,.015)*pow(lava,4)*(.32+.68*smoothstep(.18,.55,fine*2+.5));return half4(MixFog(lit,i.fog),1);
+  Light sun=GetMainLight(TransformWorldToShadowCoord(i.w));half3 lit=base*(SampleSH(n)*.85+sun.color*saturate(dot(n,sun.direction))*sun.shadowAttenuation)*LadirCloudShadow(i.w+_LadirOrigin.xyz);lit+=half3(2.8,.24,.015)*pow(lava,4)*(.32+.68*smoothstep(.18,.55,fine*2+.5));return half4(MixFog(lit,i.fog),1);
  }
  ENDHLSL }
  UsePass "Universal Render Pipeline/Lit/ShadowCaster"

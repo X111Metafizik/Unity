@@ -23,11 +23,12 @@ namespace Ladir.Planet
     { public string id,name,outletId;public double x,y,radiusMeters,waterLevelMeters,spillLevelMeters,depthMeters;public bool regional,closedBasin;public double[] direction; }
     [Serializable] public class Hydrology { public River[] rivers=Array.Empty<River>();public Lake[] lakes=Array.Empty<Lake>();public string oceanId; }
     [Serializable] public class Crossing { public string id,name,riverId,portalId;public double riverT,widthMeters;public double[] direction;public double[][] anchors; }
+    [Serializable] public class Strait {public string id,name;public double[] direction,entrance,exit;public double[][] centerline;public double minimumDepthMeters,minimumWidthMeters;}
     [Serializable] public class Landmark { public string id,name;public double[] direction;public double rangeMeters=10000,tilt=1; }
     [Serializable] public class PlanetWorld
     {
         public double radiusMeters;public uint terrainSeed,climateSeed,vegetationSeed;public double[] ridgeAxis;
-        public PlanetConfig generationConfig;public PlanetFrame frame;public Hydrology hydrology;public Crossing[] crossings=Array.Empty<Crossing>();public Landmark[] landmarks=Array.Empty<Landmark>();
+        public PlanetConfig generationConfig;public PlanetFrame frame;public Hydrology hydrology;public Crossing[] crossings=Array.Empty<Crossing>();public Strait[] straits=Array.Empty<Strait>();public Landmark[] landmarks=Array.Empty<Landmark>();
         [JsonIgnore] public ushort[] Stamps;
         [JsonIgnore] public float[] Erosion;
         [JsonIgnore] public uint[] FaceNodes;

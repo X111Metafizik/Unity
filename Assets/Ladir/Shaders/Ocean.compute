@@ -1,0 +1,26 @@
+#pragma kernel Initialize
+#pragma kernel Butterfly
+#pragma kernel Store
+StructuredBuffer<float4> _Spectrum;
+StructuredBuffer<float> _Frequency;
+StructuredBuffer<float2> _Input;
+RWStructuredBuffer<float2> _Output;
+RWTexture2D<float> _Height;
+float _Clock;
+int _Axis,_Length;
+[numthreads(8,8,1)]
+void Initialize(uint3 id:SV_DispatchThreadID)
+{
+ uint i=id.y*64+id.x;float4 p=_Spectrum[i];float s,c;sincos(_Frequency[i]*_Clock,s,c);
+ _Output[i]=float2(p.x*c-p.y*s+p.z*c+p.w*s,p.x*s+p.y*c-p.z*s+p.w*c);
+}
+[numthreads(8,8,1)]
+void Butterfly(uint3 id:SV_DispatchThreadID)
+{
+ uint length=(uint)_Length;uint i=id.y*64+id.x,q=_Axis==0?id.x:id.y,other=_Axis==0?id.y:id.x,halfLength=length/2u,k=q%halfLength,first=q/length*length+k;
+ uint i0=_Axis==0?other*64+first:first*64+other,i1=i0+(_Axis==0?halfLength:halfLength*64);
+ float s,c;sincos(k*6.283185307179586/length,s,c);float2 v=_Input[i1],twiddle=float2(v.x*c-v.y*s,v.x*s+v.y*c);
+ _Output[i]=_Input[i0]+(q%length<halfLength?twiddle:-twiddle);
+}
+[numthreads(8,8,1)]
+void Store(uint3 id:SV_DispatchThreadID){_Height[id.xy]=_Input[id.y*64+id.x].x/4096*22;}

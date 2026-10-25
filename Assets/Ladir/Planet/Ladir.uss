@@ -39,9 +39,14 @@ Button:disabled { opacity: .55; }
 .muted { color: rgb(119,153,162); font-size: 10px; white-space: normal; }
 .row Button { flex-grow: 1; font-size: 10px; }
 TextField { margin-bottom: 7px; }
-.unity-text-field__input, .unity-base-popup-field__input, .unity-base-field__input { background-color: rgb(20,38,47); color: rgb(187,218,216); border-width: 1px; border-color: rgba(119,173,172,.18); border-radius: 4px; padding: 6px; }
+.unity-text-field__input, .unity-base-popup-field__input { background-color: rgb(20,38,47); color: rgb(187,218,216); border-width: 1px; border-color: rgba(119,173,172,.18); border-radius: 4px; padding: 6px; }
 .unity-base-field__label { min-width: 0; color: rgb(151,182,186); font-size: 10px; margin-bottom: 5px; }
 .unity-base-field { margin-bottom: 15px; flex-direction: column; }
+.unity-base-slider__input { min-height: 22px; flex-direction: row; align-items: center; }
+.unity-base-slider__text-field { margin-bottom: 0; flex-direction: row; }
+.unity-base-slider__text-field .unity-text-field__input { padding: 2px; }
+.unity-scroller--vertical { width: 7px; }
+.unity-scroller--vertical .unity-scroller__low-button, .unity-scroller--vertical .unity-scroller__high-button { display: none; }
 .unity-base-slider__dragger { background-color: rgb(151,207,195); border-width: 0; border-radius: 10px; width: 10px; height: 10px; }
 .unity-base-slider__tracker { background-color: rgb(45,75,83); height: 2px; }
 .unity-base-slider__text-field { width: 48px; font-size: 9px; margin-left: 6px; }
@@ -88,6 +93,26 @@ TextField { margin-bottom: 7px; }
 .warp-panel .row { margin: 10px 0; }
 .warp-panel Button { font-size: 13px; padding: 9px 4px; }
 .selected { border-color: rgb(150,219,255); background-color: rgb(41,86,107); color: rgb(217,245,255); }
+.topbar { height: 74px; background-color: rgb(12,17,24); }
+.editor, .flight { top: 74px; bottom: 34px; }
+.statusbar { height: 34px; background-color: rgb(12,17,24); }
+.sidebar { left: 20px; right: auto; top: 20px; bottom: 20px; width: 292px; padding: 21px 19px; border-width: 1px; border-color: rgba(255,255,255,.13); border-radius: 7px; background-color: rgb(16,22,30); }
+.appearance, .inspect { flex-grow: 1; flex-shrink: 1; }
+.views { left: 340px; top: 20px; }
+.viewport-tools { left: auto; right: 24px; top: 23px; }
+.altitude { right: 28px; top: 85px; }
+.world-caption { left: 348px; bottom: 68px; }
+.world-title { font-size: 51px; }
+.world-caption .places { flex-direction: column; margin-top: 20px; }
+.world-caption .places Button { font-size: 10px; padding: 9px 15px; }
+.planet-mark { color: rgb(222,180,122); }
+.sidebar .eyebrow, .sidebar .muted { color: rgb(126,139,153); }
+.sidebar .primary { background-color: rgb(222,180,122); color: rgb(27,25,21); }
+.sidebar .unity-base-slider__dragger { background-color: rgb(222,180,122); }
+.sidebar .unity-text-field__input, .sidebar .unity-base-popup-field__input { background-color: rgb(9,14,21); color: rgb(230,233,237); }
+.sidebar .unity-base-slider__text-field .unity-text-field__input { background-color: rgba(0,0,0,0); border-width: 0; color: rgb(222,180,122); }
+.sidebar .tabs Button { color: rgb(126,139,153); }
 .pause-screen { position: absolute; left: 0; right: 0; top: 0; bottom: 0; align-items: center; justify-content: center; background-color: rgba(2,16,25,.45); }
 .pause-card { width: 340px; padding: 28px; background-color: rgba(16,29,39,.98); border-width: 1px; border-color: rgba(83,138,133,.4); border-radius: 10px; }
 .pause-card .eyebrow, .pause-card .panel-title { -unity-text-align: middle-center; }
+.basin-map { position: absolute; right: 24px; bottom: 32px; width: 312px; padding: 16px; border-width: 1px; border-radius: 6px; border-color: rgb(95,136,145); background-color: rgb(12,22,30); font-size: 10px; }

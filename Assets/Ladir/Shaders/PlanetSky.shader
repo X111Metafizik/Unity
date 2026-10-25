@@ -15,7 +15,9 @@ Shader "Ladir/Sky" {
   float sunDot=saturate(dot(ray,sun));float3 disc=float3(1.6,1.25,.85)*pow(sunDot,4500)+float3(.42,.28,.13)*pow(sunDot,36)*day;
   float star=step(.9996,hash(floor(ray*1500)))*.9;float3 cosmos=float3(.001,.003,.008)+star;
   float b=dot(camera,ray),closest=sqrt(max(0,dot(camera,camera)-b*b)),rim=exp(-max(0,closest-_LadirOrigin.w)/18000)*step(_LadirOrigin.w,closest)*step(b,0);cosmos+=float3(.15,.40,.75)*rim*saturate(dot(up,sun)+.6)*.6;
-  return half4((lerp(sky,cosmos,space)+disc)*_Exposure,1);
+  // Air, solar scattering and the visible sun disk are integrated once by
+  // the depth-aware atmosphere pass; this background supplies space only.
+  return half4((float3(.001,.003,.008)+star*space)*_Exposure,1);
  }
  ENDHLSL }
  }
